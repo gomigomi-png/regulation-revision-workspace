@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PoC-3 赤字下線差分プレビュー</title>
+  <style>
+    body {
+      font-family: "Yu Gothic UI", Meiryo, sans-serif;
+      line-height: 1.8;
+      margin: 40px;
+      color: #111827;
+    }
+    .page {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    .card {
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 20px;
+    }
+    .label {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .diff-added {
+      color: #dc2626;
+      text-decoration-line: underline;
+      text-decoration-color: #dc2626;
+      text-underline-offset: 3px;
+      font-weight: 700;
+    }
+    .diff-removed {
+      color: #dc2626;
+      text-decoration-line: line-through underline;
+      text-decoration-style: double;
+      text-decoration-color: #dc2626;
+      text-underline-offset: 3px;
+      font-weight: 700;
+    }
+    pre {
+      white-space: pre-wrap;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>PoC-3 赤字下線差分プレビュー</h1>
+    <p>就業規則 / 第3条 対象者</p>
+
+    <section class="card">
+      <div class="label">旧文</div>
+      <pre>第3条（対象者）
+対象者は、職員、嘱託職員とする。</pre>
+    </section>
+
+    <section class="card">
+      <div class="label">新文</div>
+      <pre>第3条（対象者）
+対象者は、職員、嘱託職員、再雇用嘱託職員とする。</pre>
+    </section>
+
+    <section class="card">
+      <div class="label">改正後全文用プレビュー（削除文言は表示しない）</div>
+      <p>第3条（対象者）<br>対象者は、職員、嘱託職員<span class="diff-added">、再雇用嘱託職員</span>とする。</p>
+    </section>
+
+    <section class="card">
+      <div class="label">差分確認用プレビュー（追加・削除の両方を表示）</div>
+      <p>第3条（対象者）<br>対象者は、職員、嘱託職員<span class="diff-added">、再雇用嘱託職員</span>とする。</p>
+    </section>
+
+    <section class="card">
+      <div class="label">差分サマリー</div>
+      <p>差分あり: はい</p>
+      <p>追加: 、再雇用嘱託職員</p>
+      <p>削除: なし</p>
+    </section>
+
+    <section class="card">
+      <div class="label">削除パターンの確認</div>
+      <pre>第5条（休憩時間）
+会社は、勤務時間が6時間を超える場合は45分、8時間を超える場合は1時間の休憩を与える。</pre>
+      <pre>第5条（休憩時間）
+会社は、勤務時間が6時間を超える場合は45分の休憩を与える。</pre>
+      <p><strong>改正後全文用:</strong><br>第5条（休憩時間）<br>会社は、勤務時間が6時間を超える場合は45分の休憩を与える。</p>
+      <p><strong>差分確認用:</strong><br>第5条（休憩時間）<br>会社は、勤務時間が6時間を超える場合は45分<span class="diff-removed">、8時間を超える場合は1時間</span>の休憩を与える。</p>
+      <p>削除: 、8時間を超える場合は1時間</p>
+    </section>
+  </main>
+</body>
+</html>

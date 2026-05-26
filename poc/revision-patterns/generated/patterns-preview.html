@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PoC-4 削除・新設パターン確認</title>
+  <style>
+    body {
+      font-family: "Yu Gothic UI", Meiryo, sans-serif;
+      line-height: 1.8;
+      margin: 40px;
+      color: #111827;
+    }
+    .page { max-width: 960px; margin: 0 auto; }
+    .card {
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .label { color: #6b7280; font-size: 13px; margin-bottom: 8px; }
+    .status {
+      display: inline-block;
+      border: 1px solid #d1d5db;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      color: #374151;
+      background: #f9fafb;
+    }
+    .diff-added {
+      color: #dc2626;
+      text-decoration-line: underline;
+      text-decoration-color: #dc2626;
+      text-underline-offset: 3px;
+      font-weight: 700;
+    }
+    .diff-removed {
+      color: #dc2626;
+      text-decoration-line: line-through underline;
+      text-decoration-style: double;
+      text-decoration-color: #dc2626;
+      text-underline-offset: 3px;
+      font-weight: 700;
+    }
+    .empty-text { color: #6b7280; }
+    pre {
+      white-space: pre-wrap;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>PoC-4 削除・新設パターン確認</h1>
+    <p>就業規則 の通常修正・削除・新設を、差分表示と新旧対照表の両方で確認する。</p>
+
+    
+    <section class="card">
+      <h2>第3条 対象者 <span class="status">通常修正</span></h2>
+      <div class="grid">
+        <div>
+          <div class="label">旧文</div>
+          <pre>第3条（対象者）
+対象者は、職員、嘱託職員とする。</pre>
+        </div>
+        <div>
+          <div class="label">新文</div>
+          <pre>第3条（対象者）
+対象者は、職員、嘱託職員、再雇用嘱託職員とする。</pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">改正後全文用プレビュー</div>
+        <p>第3条（対象者）<br>対象者は、職員、嘱託職員<span class="diff-added">、再雇用嘱託職員</span>とする。</p>
+      </div>
+      <div>
+        <div class="label">差分確認用プレビュー</div>
+        <p>第3条（対象者）<br>対象者は、職員、嘱託職員<span class="diff-added">、再雇用嘱託職員</span>とする。</p>
+      </div>
+      <div>
+        <div class="label">差分サマリー</div>
+        <p>追加: 、再雇用嘱託職員</p>
+        <p>削除: なし</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>第5条 勤務時間 <span class="status">通常修正</span></h2>
+      <div class="grid">
+        <div>
+          <div class="label">旧文</div>
+          <pre>第5条（勤務時間）
+職員の勤務時間は、1日8時間、1週40時間を原則とする。</pre>
+        </div>
+        <div>
+          <div class="label">新文</div>
+          <pre>第5条（勤務時間）
+職員の勤務時間は、1日8時間を原則とする。</pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">改正後全文用プレビュー</div>
+        <p>第5条（勤務時間）<br>職員の勤務時間は、1日8時間を原則とする。</p>
+      </div>
+      <div>
+        <div class="label">差分確認用プレビュー</div>
+        <p>第5条（勤務時間）<br>職員の勤務時間は、1日8時間<span class="diff-removed">、1週40時間</span>を原則とする。</p>
+      </div>
+      <div>
+        <div class="label">差分サマリー</div>
+        <p>追加: なし</p>
+        <p>削除: 、1週40時間</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>第6条 休憩時間 <span class="status">削除</span></h2>
+      <div class="grid">
+        <div>
+          <div class="label">旧文</div>
+          <pre>第6条（休憩時間）
+会社は、勤務時間が6時間を超える場合は45分、8時間を超える場合は1時間の休憩を与える。</pre>
+        </div>
+        <div>
+          <div class="label">新文</div>
+          <pre>（なし）</pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">改正後全文用プレビュー</div>
+        <p><span class="empty-text">（削除）</span></p>
+      </div>
+      <div>
+        <div class="label">差分確認用プレビュー</div>
+        <p><span class="diff-removed">第6条（休憩時間）<br>会社は、勤務時間が6時間を超える場合は45分、8時間を超える場合は1時間の休憩を与える。</span></p>
+      </div>
+      <div>
+        <div class="label">差分サマリー</div>
+        <p>追加: なし</p>
+        <p>削除: 第6条（休憩時間）
+会社は、勤務時間が6時間を超える場合は45分、8時間を超える場合は1時間の休憩を与える。</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>第6条の2 在宅勤務時の取扱い <span class="status">新設</span></h2>
+      <div class="grid">
+        <div>
+          <div class="label">旧文</div>
+          <pre>（なし）</pre>
+        </div>
+        <div>
+          <div class="label">新文</div>
+          <pre>第6条の2（在宅勤務時の取扱い）
+在宅勤務を行う職員は、会社が定める方法により勤務状況を報告しなければならない。</pre>
+        </div>
+      </div>
+      <div>
+        <div class="label">改正後全文用プレビュー</div>
+        <p><span class="diff-added">第6条の2（在宅勤務時の取扱い）<br>在宅勤務を行う職員は、会社が定める方法により勤務状況を報告しなければならない。</span></p>
+      </div>
+      <div>
+        <div class="label">差分確認用プレビュー</div>
+        <p><span class="diff-added">第6条の2（在宅勤務時の取扱い）<br>在宅勤務を行う職員は、会社が定める方法により勤務状況を報告しなければならない。</span></p>
+      </div>
+      <div>
+        <div class="label">差分サマリー</div>
+        <p>追加: 第6条の2（在宅勤務時の取扱い）
+在宅勤務を行う職員は、会社が定める方法により勤務状況を報告しなければならない。</p>
+        <p>削除: なし</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,124 @@
+{
+  "sourceFile": "sample-regulation.txt",
+  "regulationTitle": "就業規則",
+  "preambleText": "就業規則",
+  "blockCount": 10,
+  "articleCount": 6,
+  "blocks": [
+    {
+      "id": "block-1",
+      "type": "chapter",
+      "label": "第1章",
+      "title": "総則",
+      "originalText": "第1章 総則",
+      "revisedText": "第1章 総則",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    },
+    {
+      "id": "block-2",
+      "type": "article",
+      "label": "第1条",
+      "title": "目的",
+      "originalText": "第1条（目的）\nこの規則は、職員の就業に関する基本的事項を定めることを目的とする。",
+      "revisedText": "第1条（目的）\nこの規則は、職員の就業に関する基本的事項を定めることを目的とする。",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    },
+    {
+      "id": "block-3",
+      "type": "article",
+      "label": "第2条",
+      "title": "適用範囲",
+      "originalText": "第2条（適用範囲）\nこの規則は、会社に勤務する職員に適用する。\n2 パートタイマー、嘱託職員その他の職員について別に定める場合は、その定めるところによる。",
+      "revisedText": "第2条（適用範囲）\nこの規則は、会社に勤務する職員に適用する。\n2 パートタイマー、嘱託職員その他の職員について別に定める場合は、その定めるところによる。",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    },
+    {
+      "id": "block-4",
+      "type": "article",
+      "label": "第3条",
+      "title": "対象者",
+      "originalText": "第3条（対象者）\n対象者は、職員、嘱託職員とする。",
+      "revisedText": "第3条（対象者）\n対象者は、職員、嘱託職員とする。",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    },
+    {
+      "id": "block-5",
+      "type": "chapter",
+      "label": "第2章",
+      "title": "勤務",
+      "originalText": "第2章 勤務",
+      "revisedText": "第2章 勤務",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    },
+    {
+      "id": "block-6",
+      "type": "article",
+      "label": "第4条",
+      "title": "勤務時間",
+      "originalText": "第4条（勤務時間）\n職員の勤務時間は、1日8時間、1週40時間を原則とする。",
+      "revisedText": "第4条（勤務時間）\n職員の勤務時間は、1日8時間、1週40時間を原則とする。",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    },
+    {
+      "id": "block-7",
+      "type": "article",
+      "label": "第5条",
+      "title": "休憩時間",
+      "originalText": "第5条（休憩時間）\n会社は、勤務時間が6時間を超える場合は45分、8時間を超える場合は1時間の休憩を与える。",
+      "revisedText": "第5条（休憩時間）\n会社は、勤務時間が6時間を超える場合は45分、8時間を超える場合は1時間の休憩を与える。",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    },
+    {
+      "id": "block-8",
+      "type": "article",
+      "label": "第6条",
+      "title": "看護休暇",
+      "originalText": "第6条（看護休暇）\n小学校就学の始期に達するまでの子を養育する職員は、申し出ることにより看護休暇を取得することができる。\n2 看護休暇の取得日数は、対象となる子が1人の場合は年5日、2人以上の場合は年10日とする。",
+      "revisedText": "第6条（看護休暇）\n小学校就学の始期に達するまでの子を養育する職員は、申し出ることにより看護休暇を取得することができる。\n2 看護休暇の取得日数は、対象となる子が1人の場合は年5日、2人以上の場合は年10日とする。",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    },
+    {
+      "id": "block-9",
+      "type": "supplementary",
+      "label": "附則",
+      "title": "",
+      "originalText": "附則\nこの規則は、令和6年4月1日から施行する。",
+      "revisedText": "附則\nこの規則は、令和6年4月1日から施行する。",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    },
+    {
+      "id": "block-10",
+      "type": "appendix",
+      "label": "別表1",
+      "title": "",
+      "originalText": "別表1\n手当の種類および金額は、会社が別に定める。",
+      "revisedText": "別表1\n手当の種類および金額は、会社が別に定める。",
+      "isRevisionTarget": false,
+      "hasDiff": false,
+      "status": "unchanged"
+    }
+  ],
+  "notes": [
+    "第○章、第○条、附則、別表を別ブロックとして扱うPoC。",
+    "旧文と新文の初期値は同じ内容にしている。",
+    "本文がない章見出しも、規程順を保つため独立ブロックとして保持している。"
+  ]
+}
