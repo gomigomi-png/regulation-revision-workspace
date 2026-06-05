@@ -223,6 +223,90 @@ Pane 4 の補助候補:
 
 これにより、人間は既存の旧規程Wordを開き、修正条文一覧とPane 4の差分を見ながら、赤字下線入りの改正規程全文を作成できる。
 
+## データモデル仮型
+
+初回実装では、データモデルを以下の単位に分ける。
+
+- 改正案件
+  - 1つの常務会提案テーマ、または1つの改正作業単位
+  - 複数の対象規程を持つ
+- 対象規程
+  - 規程名、進捗ステータス、貼り付け元の全文、条文ブロック一覧を持つ
+- 条文ブロック
+  - 規程内の表示順を持つ最小編集単位
+  - `第○章`、`第○条`、`附則`、`別表` などを同じ配列で扱う
+  - 旧文と新文を分けて持つ
+
+実装上の仮型は `lib/regulation-revision/schema.ts` に置く。
+
+```ts
+type RegulationRevisionWorkspace = {
+  id: string;
+  title: string;
+  status: "draft" | "reviewing" | "readyForSubmission";
+  summary: string;
+  regulations: RevisionRegulation[];
+};
+
+type RevisionRegulation = {
+  id: string;
+  title: string;
+  progressStatus: "notStarted" | "editing" | "confirmed";
+  sourceText: string;
+  articles: RegulationArticleBlock[];
+};
+
+type RegulationArticleBlock = {
+  id: string;
+  order: number;
+  kind: "chapter" | "article" | "supplementary" | "appendix" | "form" | "other";
+  label: string;
+  title: string;
+  oldText: string | null;
+  newText: string | null;
+  revisionReason: string;
+  isRevisionTarget: boolean;
+};
+```
+
+### 保存する状態と派生する状態
+
+保存する状態:
+
+- 人間が入力した案件名、規程名、本文、修正理由
+- 人間が指定した修正対象フラグ
+- 条文ブロックの順序
+- 旧文・新文の有無
+
+派生する状態:
+
+- 差分あり
+  - `oldText` と `newText` が異なるかどうかで判定する
+- 変更種別
+  - `oldText` あり・`newText` あり・内容差分なし: 変更なし
+  - `oldText` あり・`newText` あり・内容差分あり: 通常修正
+  - `oldText` なし・`newText` あり: 新設
+  - `oldText` あり・`newText` なし: 削除
+
+`差分あり` や `通常修正` は保存せず、出力・表示の直前に派生計算する。
+
+### 出力に必要な派生データ
+
+新旧対照表 Word 出力では、対象規程ごとに以下を作る。
+
+- 変更のある条文行
+  - 条文ラベル
+  - 見出し
+  - 新文
+  - 旧文
+  - 変更種別
+- 変更のない範囲の省略行
+  - 開始条文ラベル
+  - 終了条文ラベル
+
+改正後全文テキストコピーでは、規程内の `articles` を `order` 順に並べ、`newText` を連結する。
+削除条文は `newText` がないため除外し、新設条文は `order` の位置に入る。
+
 ## 将来機能として残すもの
 
 初回版では扱わず、将来検討するもの:
