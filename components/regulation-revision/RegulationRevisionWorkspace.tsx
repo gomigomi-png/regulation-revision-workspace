@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { ClipboardCopy, FileText, ListChecks } from "lucide-react";
 
 import {
   type RegulationArticleBlock,
@@ -285,7 +286,6 @@ export function RegulationRevisionWorkspace({
             <SidebarGroupContent>
               <SidebarMenu>
                 {workspace.regulations.map((regulation) => {
-                  const changedCount = countChangedArticles(regulation.articles);
                   return (
                     <SidebarMenuItem key={regulation.id}>
                       <SidebarMenuButton
@@ -294,9 +294,13 @@ export function RegulationRevisionWorkspace({
                         onClick={() => selectRegulation(regulation.id)}
                       >
                         <span className="truncate">{regulation.title}</span>
-                        <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-                          {changedCount}
-                        </span>
+                        <Badge
+                          className="ml-auto"
+                          variant={progressBadgeVariant(regulation.progressStatus)}
+                          size="xs"
+                        >
+                          {progressLabels[regulation.progressStatus]}
+                        </Badge>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
@@ -308,7 +312,7 @@ export function RegulationRevisionWorkspace({
       </Sidebar>
 
       <SidebarInset className="flex min-w-0 flex-col bg-transparent">
-        <header className="flex h-12 shrink-0 items-center justify-between gap-3 border-b bg-gradient-to-r from-background via-card to-muted/60 px-4">
+        <header className="flex min-h-14 shrink-0 items-center justify-between gap-3 border-b bg-gradient-to-r from-background via-card to-muted/60 px-4 py-2">
           <div className="flex min-w-0 items-center gap-3">
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold">{workspace.title}</p>
@@ -317,7 +321,21 @@ export function RegulationRevisionWorkspace({
               </p>
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+            <div className="flex flex-wrap items-center justify-end gap-1.5">
+              <Button type="button" size="sm">
+                <FileText data-icon="inline-start" aria-hidden />
+                新旧対照表をWord出力
+              </Button>
+              <Button type="button" variant="secondary" size="sm">
+                <ClipboardCopy data-icon="inline-start" aria-hidden />
+                改正後全文をコピー
+              </Button>
+              <Button type="button" variant="outline" size="sm">
+                <ListChecks data-icon="inline-start" aria-hidden />
+                修正条文一覧を出力
+              </Button>
+            </div>
             <Badge variant="outline">{workspaceStatusLabels[workspace.status]}</Badge>
             <Badge variant="secondary">{activeRegulation.title}</Badge>
           </div>

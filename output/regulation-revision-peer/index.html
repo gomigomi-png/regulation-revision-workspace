@@ -31,17 +31,56 @@
 
 <section class="mb-16 md:mb-20">
   <div class="flex items-center gap-3 mb-8"><div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10 flex-shrink-0"><i data-lucide="camera" class="w-5 h-5 text-blue-600"></i></div><h2 class="text-xl md:text-2xl font-bold text-slate-900">ツール画面のキャプチャ</h2></div>
-  <figure class="my-6 rounded-xl border border-ads-border overflow-hidden bg-ads-surface shadow-sm"><img src="assets/workspace-screenshot.png" alt="規程改正ワークスペースの4ペイン画面。左から対象規程、条文リスト、旧文と新文の編集、差分プレビューが並んでいる。" class="w-full h-auto block" loading="lazy" decoding="async" /><figcaption class="px-4 py-3 text-sm text-ads-muted border-t border-ads-border">実装した規程改正ワークスペース。左から右へ、作業の流れがそのまま画面の流れになります。</figcaption></figure>
+  <figure class="my-6 rounded-xl border border-ads-border overflow-hidden bg-ads-surface shadow-sm"><img src="assets/workspace-screenshot.png" alt="規程改正ワークスペースの4ペイン画面。上部に新旧対照表Word出力、改正後全文コピー、修正条文一覧出力のボタンがあり、左から対象規程、条文リスト、旧文と新文の編集、差分プレビューが並んでいる。" class="w-full h-auto block" loading="lazy" decoding="async" /><figcaption class="px-4 py-3 text-sm text-ads-muted border-t border-ads-border">実装した規程改正ワークスペース。上部の出力ボタンから、確認後の提出資料作成へ進めます。</figcaption></figure>
 </section>
 
 <section class="mb-16 md:mb-20">
   <div class="flex items-center gap-3 mb-8"><div class="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500/10 flex-shrink-0"><i data-lucide="route" class="w-5 h-5 text-emerald-600"></i></div><h2 class="text-xl md:text-2xl font-bold text-slate-900">4ペインで進める操作と役割</h2></div>
-  <div class="grid md:grid-cols-2 gap-4">
-    <div class="bg-ads-surface border border-ads-border rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">1</div><i data-lucide="folder-open" class="w-5 h-5 text-blue-600"></i><h3 class="font-bold text-slate-900">Pane 1: 対象規程を選ぶ</h3></div><p class="text-sm text-ads-muted">改正案件に含まれる複数の規程を並べ、今回直す規程を選びます。進捗と差分件数もここで把握します。</p></div>
-    <div class="bg-ads-surface border border-ads-border rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">2</div><i data-lucide="list-checks" class="w-5 h-5 text-blue-600"></i><h3 class="font-bold text-slate-900">Pane 2: 条文を選ぶ</h3></div><p class="text-sm text-ads-muted">選択中規程の条文を一覧化し、編集したい条文を選びます。「修正対象」と「差分あり」も分けて見せます。</p></div>
-    <div class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">3</div><i data-lucide="file-pen-line" class="w-5 h-5 text-ads-accent-light"></i><h3 class="font-bold text-slate-900">Pane 3: 新文を編集する</h3></div><p class="text-sm text-ads-muted">旧文を固定表示し、新文と修正理由だけを編集します。規程改正作業の中心になる場所です。</p></div>
-    <div class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">4</div><i data-lucide="scan-text" class="w-5 h-5 text-ads-accent-light"></i><h3 class="font-bold text-slate-900">Pane 4: 差分を見る</h3></div><p class="text-sm text-ads-muted">選択中条文の赤字下線差分と、新旧対照表の見え方を確認します。</p></div>
+  <div class="rounded-xl border border-ads-border bg-white shadow-sm overflow-hidden">
+    <div class="grid grid-cols-4 border-b border-ads-border bg-ads-surface">
+      <div class="p-4 text-center border-r border-ads-border"><div class="mx-auto mb-2 flex w-8 h-8 items-center justify-center rounded-full bg-ads-accent text-sm font-bold text-white">1</div><i data-lucide="folder-open" class="w-5 h-5 text-blue-600 mx-auto mb-2"></i><h3 class="text-sm font-bold text-slate-900">対象規程</h3></div>
+      <div class="p-4 text-center border-r border-ads-border"><div class="mx-auto mb-2 flex w-8 h-8 items-center justify-center rounded-full bg-ads-accent text-sm font-bold text-white">2</div><i data-lucide="list-checks" class="w-5 h-5 text-blue-600 mx-auto mb-2"></i><h3 class="text-sm font-bold text-slate-900">条文</h3></div>
+      <div class="p-4 text-center border-r border-ads-border bg-blue-500/5"><div class="mx-auto mb-2 flex w-8 h-8 items-center justify-center rounded-full bg-ads-accent text-sm font-bold text-white">3</div><i data-lucide="file-pen-line" class="w-5 h-5 text-ads-accent-light mx-auto mb-2"></i><h3 class="text-sm font-bold text-slate-900">新文編集</h3></div>
+      <div class="p-4 text-center bg-blue-500/5"><div class="mx-auto mb-2 flex w-8 h-8 items-center justify-center rounded-full bg-ads-accent text-sm font-bold text-white">4</div><i data-lucide="scan-text" class="w-5 h-5 text-ads-accent-light mx-auto mb-2"></i><h3 class="text-sm font-bold text-slate-900">差分確認</h3></div>
+    </div>
+    <div class="grid md:grid-cols-4 gap-4 p-5">
+      <p class="text-sm text-ads-muted"><span class="font-bold text-slate-900">Pane 1:</span> 改正案件に含まれる複数の規程を並べ、今回直す規程を選びます。未着手・編集中・確認済みの進捗ステータスもここで把握します。</p>
+      <p class="text-sm text-ads-muted"><span class="font-bold text-slate-900">Pane 2:</span> 選択中規程の条文を一覧化し、編集したい条文を選びます。「修正対象」と「差分あり」も分けて見せます。</p>
+      <p class="text-sm text-ads-muted"><span class="font-bold text-slate-900">Pane 3:</span> 旧文を固定表示し、新文と修正理由だけを編集します。規程改正作業の中心になる場所です。</p>
+      <p class="text-sm text-ads-muted"><span class="font-bold text-slate-900">Pane 4:</span> 選択中条文の赤字下線差分と、新旧対照表の見え方を確認します。</p>
+    </div>
   </div>
+</section>
+
+<section class="mb-16 md:mb-20">
+  <div class="flex items-center gap-3 mb-8"><div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10 flex-shrink-0"><i data-lucide="file-output" class="w-5 h-5 text-blue-600"></i></div><h2 class="text-xl md:text-2xl font-bold text-slate-900">新旧対照表Word出力の流れ</h2></div>
+  <div class="grid sm:grid-cols-3 gap-4 mb-6">
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">1</div><i data-lucide="scan-text" class="w-5 h-5 text-blue-600"></i><h3 class="font-bold text-slate-900">差分を確認</h3></div><p class="text-sm text-ads-muted">Pane 4で赤字下線差分と新旧対照表プレビューを確認します。</p></div>
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">2</div><i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i><h3 class="font-bold text-slate-900">Word出力</h3></div><p class="text-sm text-ads-muted">画面上部の「新旧対照表をWord出力」ボタンから、選択中の規程全体を出力します。</p></div>
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">3</div><i data-lucide="table-2" class="w-5 h-5 text-blue-600"></i><h3 class="font-bold text-slate-900">提出資料化</h3></div><p class="text-sm text-ads-muted">変更箇所だけを新旧2列で並べ、変更のない範囲は【略】として整理します。</p></div>
+  </div>
+  <figure class="rounded-xl border border-ads-border overflow-hidden bg-white shadow-sm">
+    <div class="bg-ads-surface border-b border-ads-border px-4 py-3 flex items-center justify-between gap-3"><div><p class="text-sm font-bold text-slate-900">出力イメージ: 新旧対照表</p><p class="text-xs text-ads-muted">常務会提出用の2列表です。</p></div><span class="inline-flex items-center gap-1 rounded-full bg-ads-accent/10 px-3 py-1 text-xs font-medium text-ads-accent-light"><i data-lucide="file-text" class="w-3.5 h-3.5"></i>Word</span></div>
+    <div class="p-4 md:p-6 bg-slate-100">
+      <div class="mx-auto max-w-2xl rounded-sm bg-white p-5 shadow-md ring-1 ring-slate-200">
+        <table class="w-full border-collapse text-sm text-slate-900">
+          <thead>
+            <tr>
+              <th class="w-1/2 border border-slate-400 bg-slate-50 px-3 py-2 text-center font-bold">新</th>
+              <th class="w-1/2 border border-slate-400 bg-slate-50 px-3 py-2 text-center font-bold">旧</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="align-top border border-slate-400 px-3 py-3 leading-7">就業規則（案）<br>第１条～第２条　【略】<br>第３条　対象者は、職員、嘱託職員、<span class="font-bold text-red-600 underline decoration-red-600 underline-offset-2">再雇用嘱託職員</span>とする。<br>第４条～第３０条　【略】<br>以上</td>
+              <td class="align-top border border-slate-400 px-3 py-3 leading-7">就業規則<br>第１条～第２条　【略】<br>第３条　対象者は、職員、嘱託職員とする。<br>第４条～第３０条　【略】<br>以上</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <figcaption class="px-4 py-3 text-sm text-ads-muted border-t border-ads-border">アプリ内では条文単位で編集し、出力時に規程全体の変更行と省略行を組み立てます。</figcaption>
+  </figure>
 </section>
 
 <section class="mb-16 md:mb-20">
