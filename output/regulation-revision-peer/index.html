@@ -1,410 +1,75 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
   <meta name="googlebot" content="noindex, nofollow">
-  <meta property="og:title" content="規程改正ワークスペースの考え方">
-  <meta property="og:description" content="規程改正案の資料作成を支援する4ペインワークスペースの構成と初回版の方針を図解します。">
+  <meta property="og:title" content="規程改正ワークスペース">
+  <meta property="og:description" content="社内規程の改正を1画面で行うツールです。">
   <meta property="og:type" content="article">
-  <title>規程改正ワークスペースの考え方</title>
+  <title>規程改正ワークスペース</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFFFFF'/><rect x='8' y='8' width='84' height='84' rx='14' fill='none' stroke='%233B82F6' stroke-width='4'/><circle cx='32' cy='40' r='10' fill='%233B82F6' opacity='0.8'/><circle cx='68' cy='40' r='10' fill='%2360A5FA' opacity='0.8'/><rect x='25' y='62' width='50' height='6' rx='3' fill='%2394A3B8' opacity='0.6'/><rect x='30' y='74' width='40' height='6' rx='3' fill='%2394A3B8' opacity='0.3'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ads: {
-              bg: '#FFFFFF',
-              surface: '#F8FAFC',
-              hover: '#F1F5F9',
-              border: '#E2E8F0',
-              accent: '#3B82F6',
-              'accent-light': '#2563EB',
-              text: '#1E293B',
-              muted: '#64748B',
-              dim: '#94A3B8',
-              positive: '#10B981',
-              negative: '#EF4444',
-              warning: '#F59E0B',
-            }
-          },
-          fontFamily: {
-            sans: ['"Noto Sans JP"', '"Hiragino Sans"', '"Hiragino Kaku Gothic ProN"', '"Yu Gothic UI"', '"Meiryo"', 'sans-serif'],
-          }
-        }
-      }
-    }
+    tailwind.config = { theme: { extend: { colors: { ads: { bg: '#FFFFFF', surface: '#F8FAFC', hover: '#F1F5F9', border: '#E2E8F0', accent: '#3B82F6', 'accent-light': '#2563EB', text: '#1E293B', muted: '#64748B', dim: '#94A3B8', positive: '#10B981', negative: '#EF4444', warning: '#F59E0B' } }, fontFamily: { sans: ['"Noto Sans JP"', '"Hiragino Sans"', '"Hiragino Kaku Gothic ProN"', '"Yu Gothic UI"', '"Meiryo"', 'sans-serif'] } } } }
   </script>
-  <style>
-    @media print {
-      .no-print { display: none !important; }
-      body { border-top: none !important; }
-      .rounded-xl { break-inside: avoid; }
-      .md\:flex-row { flex-direction: row !important; }
-      .md\:hidden { display: none !important; }
-      .hidden.md\:block { display: block !important; }
-      .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-      .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-      .md\:mb-20 { margin-bottom: 5rem !important; }
-      .md\:py-16 { padding-top: 4rem !important; padding-bottom: 4rem !important; }
-      .bg-clip-text.text-transparent {
-        -webkit-background-clip: initial !important;
-        background-clip: initial !important;
-        color: #2563EB !important;
-        -webkit-text-fill-color: #2563EB !important;
-      }
-    }
-  </style>
+  <style>@media print { .no-print { display: none !important; } body { border-top: none !important; } .rounded-xl { break-inside: avoid; } .md\:flex-row { flex-direction: row !important; } .md\:hidden { display: none !important; } .hidden.md\:block { display: block !important; } .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } .md\:mb-20 { margin-bottom: 5rem !important; } .md\:py-16 { padding-top: 4rem !important; padding-bottom: 4rem !important; } .bg-clip-text.text-transparent { -webkit-background-clip: initial !important; background-clip: initial !important; color: #2563EB !important; -webkit-text-fill-color: #2563EB !important; } }</style>
 </head>
 <body class="bg-ads-bg text-slate-600 antialiased leading-relaxed border-t-4 border-ads-accent">
-  <div class="no-print max-w-3xl mx-auto px-5 pt-2 flex justify-end">
-    <button onclick="window.print()" class="flex items-center gap-1.5 text-xs text-ads-dim hover:text-ads-accent transition-colors cursor-pointer">
-      <i data-lucide="download" class="w-3.5 h-3.5"></i>
-      PDF
-    </button>
-  </div>
+  <div class="no-print max-w-3xl mx-auto px-5 pt-2 flex justify-end"><button onclick="window.print()" class="flex items-center gap-1.5 text-xs text-ads-dim hover:text-ads-accent transition-colors cursor-pointer"><i data-lucide="download" class="w-3.5 h-3.5"></i>PDF</button></div>
   <main class="max-w-3xl mx-auto px-5 py-10 md:py-16">
 
 <div class="text-center mb-10 md:mb-14">
-  <div class="inline-flex items-center gap-2 bg-ads-accent/10 text-ads-accent-light px-4 py-1.5 rounded-full text-sm font-medium mb-6">
-    <i data-lucide="file-text" class="w-4 h-4"></i>
-    規程改正ワークスペース
-  </div>
-  <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-6">
-    常務会資料づくりを<br class="md:hidden">4ペインで整理する
-  </h1>
-  <p class="text-lg text-ads-muted max-w-xl mx-auto leading-relaxed">
-    規程本文を外部AIに出さず、人間が確認しながら、新旧対照表と改正後全文づくりを進めるための設計です。
-  </p>
-</div>
-
-<div class="bg-ads-surface border border-ads-border rounded-2xl p-6 md:p-9 mb-16">
-  <div class="text-center mb-8">
-    <p class="text-xl md:text-2xl font-black text-slate-900 mb-2">
-      ひとことで言うと
-    </p>
-    <p class="text-ads-muted">
-      「旧文を守りながら、新文だけを編集し、差分と新旧対照表を作る」道具
-    </p>
-  </div>
-
-  <div class="grid md:grid-cols-4 gap-3">
-    <div class="bg-white border border-ads-border rounded-xl p-4 text-center">
-      <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mx-auto mb-3">
-        <i data-lucide="list" class="w-6 h-6 text-blue-600"></i>
-      </div>
-      <div class="font-bold text-slate-900 mb-1">Pane 1</div>
-      <div class="text-xs text-ads-muted">対象規程を選ぶ</div>
-    </div>
-    <div class="bg-white border border-ads-border rounded-xl p-4 text-center">
-      <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mx-auto mb-3">
-        <i data-lucide="rows-3" class="w-6 h-6 text-blue-600"></i>
-      </div>
-      <div class="font-bold text-slate-900 mb-1">Pane 2</div>
-      <div class="text-xs text-ads-muted">全条文を見る</div>
-    </div>
-    <div class="bg-white border-2 border-ads-accent/30 rounded-xl p-4 text-center">
-      <div class="w-12 h-12 rounded-xl bg-ads-accent/10 flex items-center justify-center mx-auto mb-3">
-        <i data-lucide="pen-line" class="w-6 h-6 text-ads-accent-light"></i>
-      </div>
-      <div class="font-bold text-slate-900 mb-1">Pane 3</div>
-      <div class="text-xs text-ads-muted">新文を編集する</div>
-    </div>
-    <div class="bg-white border-2 border-ads-accent/30 rounded-xl p-4 text-center">
-      <div class="w-12 h-12 rounded-xl bg-ads-accent/10 flex items-center justify-center mx-auto mb-3">
-        <i data-lucide="scan-text" class="w-6 h-6 text-ads-accent-light"></i>
-      </div>
-      <div class="font-bold text-slate-900 mb-1">Pane 4</div>
-      <div class="text-xs text-ads-muted">差分を確認する</div>
-    </div>
-  </div>
+  <div class="inline-flex items-center gap-2 bg-ads-accent/10 text-ads-accent-light px-4 py-1.5 rounded-full text-sm font-medium mb-6"><i data-lucide="file-text" class="w-4 h-4"></i>メンバー報告用</div>
+  <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-6">規程改正ワークスペース</h1>
+  <p class="text-lg text-ads-muted max-w-xl mx-auto leading-relaxed">社内規程の改正を1画面で行うツールです。</p>
 </div>
 
 <section class="mb-16 md:mb-20">
-  <div class="flex items-center gap-3 mb-8">
-    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10 flex-shrink-0">
-      <i data-lucide="route" class="w-5 h-5 text-blue-600"></i>
-    </div>
-    <h2 class="text-xl md:text-2xl font-bold text-slate-900">作業の流れ</h2>
-  </div>
-
-  <div class="space-y-4">
-    <div class="flex gap-4 bg-white border border-ads-border rounded-xl p-4">
-      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-ads-accent text-white font-bold flex-shrink-0">1</div>
-      <div>
-        <h3 class="font-bold text-slate-900 mb-1">Word本文を貼り付ける</h3>
-        <p class="text-sm text-ads-muted">初回版ではWordファイルの自動読み込みはしません。人間が本文をコピーして画面に貼り付けます。</p>
-      </div>
-    </div>
-    <div class="flex gap-4 bg-white border border-ads-border rounded-xl p-4">
-      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-ads-accent text-white font-bold flex-shrink-0">2</div>
-      <div>
-        <h3 class="font-bold text-slate-900 mb-1">条文候補に分ける</h3>
-        <p class="text-sm text-ads-muted">アプリが「第○条」を目印に、ローカル処理でざっくり分割します。完璧な解析ではなく、作業用の下書きです。</p>
-      </div>
-    </div>
-    <div class="flex gap-4 bg-white border border-ads-border rounded-xl p-4">
-      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-ads-accent text-white font-bold flex-shrink-0">3</div>
-      <div>
-        <h3 class="font-bold text-slate-900 mb-1">旧文を見ながら新文だけ編集する</h3>
-        <p class="text-sm text-ads-muted">旧文は固定表示にして、誤って元の規程を変える事故を防ぎます。修正理由も同じ画面で入力します。</p>
-      </div>
-    </div>
-    <div class="flex gap-4 bg-white border border-ads-border rounded-xl p-4">
-      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-ads-accent text-white font-bold flex-shrink-0">4</div>
-      <div>
-        <h3 class="font-bold text-slate-900 mb-1">赤字下線差分を確認して出力する</h3>
-        <p class="text-sm text-ads-muted">Pane 4で選択中条文の差分を確認し、常務会提出用の新旧対照表Wordを作ります。</p>
-      </div>
-    </div>
-  </div>
+  <div class="flex items-center gap-3 mb-8"><div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10 flex-shrink-0"><i data-lucide="camera" class="w-5 h-5 text-blue-600"></i></div><h2 class="text-xl md:text-2xl font-bold text-slate-900">ツール画面のキャプチャ</h2></div>
+  <figure class="my-6 rounded-xl border border-ads-border overflow-hidden bg-ads-surface shadow-sm"><img src="assets/workspace-screenshot.png" alt="規程改正ワークスペースの4ペイン画面。左から対象規程、条文リスト、旧文と新文の編集、差分プレビューが並んでいる。" class="w-full h-auto block" loading="lazy" decoding="async" /><figcaption class="px-4 py-3 text-sm text-ads-muted border-t border-ads-border">実装した規程改正ワークスペース。左から右へ、作業の流れがそのまま画面の流れになります。</figcaption></figure>
 </section>
 
 <section class="mb-16 md:mb-20">
-  <div class="flex items-center gap-3 mb-8">
-    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500/10 flex-shrink-0">
-      <i data-lucide="layout-panel-left" class="w-5 h-5 text-emerald-600"></i>
-    </div>
-    <h2 class="text-xl md:text-2xl font-bold text-slate-900">4ペインで何を分担するか</h2>
-  </div>
-
+  <div class="flex items-center gap-3 mb-8"><div class="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500/10 flex-shrink-0"><i data-lucide="route" class="w-5 h-5 text-emerald-600"></i></div><h2 class="text-xl md:text-2xl font-bold text-slate-900">4ペインで進める操作と役割</h2></div>
   <div class="grid md:grid-cols-2 gap-4">
-    <div class="bg-ads-surface border border-ads-border rounded-xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <i data-lucide="folder-open" class="w-5 h-5 text-blue-600"></i>
-        <h3 class="font-bold text-slate-900">Pane 1: 対象規程リスト</h3>
-      </div>
-      <p class="text-sm text-ads-muted">1つの改正案件に含まれる複数の規程を並べます。進捗は「未着手・編集中・確認済み」の3段階です。</p>
-    </div>
-    <div class="bg-ads-surface border border-ads-border rounded-xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <i data-lucide="list-checks" class="w-5 h-5 text-blue-600"></i>
-        <h3 class="font-bold text-slate-900">Pane 2: 全条文リスト</h3>
-      </div>
-      <p class="text-sm text-ads-muted">選択中規程の全条文を表示します。「修正対象」と「差分あり」を分けて見せます。</p>
-    </div>
-    <div class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <i data-lucide="file-pen-line" class="w-5 h-5 text-ads-accent-light"></i>
-        <h3 class="font-bold text-slate-900">Pane 3: 条文編集</h3>
-      </div>
-      <p class="text-sm text-ads-muted">旧文は固定表示、新文と修正理由だけを編集します。条文削除や新設もここで扱います。</p>
-    </div>
-    <div class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-5">
-      <div class="flex items-center gap-2 mb-3">
-        <i data-lucide="badge-check" class="w-5 h-5 text-ads-accent-light"></i>
-        <h3 class="font-bold text-slate-900">Pane 4: 差分プレビュー</h3>
-      </div>
-      <p class="text-sm text-ads-muted">選択中条文だけの赤字下線差分を主役にします。編集しながら結果をすぐ確認できます。</p>
-    </div>
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">1</div><i data-lucide="folder-open" class="w-5 h-5 text-blue-600"></i><h3 class="font-bold text-slate-900">Pane 1: 対象規程を選ぶ</h3></div><p class="text-sm text-ads-muted">改正案件に含まれる複数の規程を並べ、今回直す規程を選びます。進捗と差分件数もここで把握します。</p></div>
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">2</div><i data-lucide="list-checks" class="w-5 h-5 text-blue-600"></i><h3 class="font-bold text-slate-900">Pane 2: 条文を選ぶ</h3></div><p class="text-sm text-ads-muted">選択中規程の条文を一覧化し、編集したい条文を選びます。「修正対象」と「差分あり」も分けて見せます。</p></div>
+    <div class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">3</div><i data-lucide="file-pen-line" class="w-5 h-5 text-ads-accent-light"></i><h3 class="font-bold text-slate-900">Pane 3: 新文を編集する</h3></div><p class="text-sm text-ads-muted">旧文を固定表示し、新文と修正理由だけを編集します。規程改正作業の中心になる場所です。</p></div>
+    <div class="bg-blue-500/5 border border-blue-500/20 rounded-xl p-5"><div class="flex items-center gap-2 mb-3"><div class="flex items-center justify-center w-7 h-7 rounded-full bg-ads-accent text-white text-sm font-bold flex-shrink-0">4</div><i data-lucide="scan-text" class="w-5 h-5 text-ads-accent-light"></i><h3 class="font-bold text-slate-900">Pane 4: 差分を見る</h3></div><p class="text-sm text-ads-muted">選択中条文の赤字下線差分と、新旧対照表の見え方を確認します。</p></div>
   </div>
 </section>
 
 <section class="mb-16 md:mb-20">
-  <div class="flex items-center gap-3 mb-8">
-    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-amber-500/10 flex-shrink-0">
-      <i data-lucide="tags" class="w-5 h-5 text-amber-600"></i>
-    </div>
-    <h2 class="text-xl md:text-2xl font-bold text-slate-900">「修正対象」と「差分あり」は別物</h2>
-  </div>
-
-  <div class="grid md:grid-cols-2 gap-4 mb-6">
-    <div class="bg-white border border-ads-border rounded-xl p-6">
-      <div class="inline-flex items-center gap-2 bg-amber-500/10 text-amber-700 px-3 py-1 rounded-full text-xs font-bold mb-4">
-        <i data-lucide="hand" class="w-3.5 h-3.5"></i>
-        人間が付ける
-      </div>
-      <h3 class="text-lg font-bold text-slate-900 mb-2">修正対象</h3>
-      <p class="text-sm text-ads-muted">「今回直す予定の条文」として管理する印です。まだ新文を変えていなくても付けられます。</p>
-    </div>
-    <div class="bg-white border border-ads-border rounded-xl p-6">
-      <div class="inline-flex items-center gap-2 bg-blue-500/10 text-blue-700 px-3 py-1 rounded-full text-xs font-bold mb-4">
-        <i data-lucide="bot" class="w-3.5 h-3.5"></i>
-        アプリが検出
-      </div>
-      <h3 class="text-lg font-bold text-slate-900 mb-2">差分あり</h3>
-      <p class="text-sm text-ads-muted">旧文と新文が違うときに自動で出る状態です。意図しない変更にも気づきやすくなります。</p>
-    </div>
-  </div>
-
-  <div class="bg-ads-surface border border-ads-border rounded-xl p-5">
-    <div class="flex items-start gap-3">
-      <i data-lucide="lightbulb" class="w-5 h-5 text-ads-accent mt-0.5 flex-shrink-0"></i>
-      <p class="text-sm text-ads-muted">
-        この2つを分けると、「これから直す予定」と「実際に変更が入っている状態」を混同せずに管理できます。
-      </p>
-    </div>
-  </div>
-</section>
-
-<section class="mb-16 md:mb-20">
-  <div class="flex items-center gap-3 mb-8">
-    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-red-500/10 flex-shrink-0">
-      <i data-lucide="git-compare-arrows" class="w-5 h-5 text-red-600"></i>
-    </div>
-    <h2 class="text-xl md:text-2xl font-bold text-slate-900">削除・新設はこう扱う</h2>
-  </div>
-
+  <div class="flex items-center gap-3 mb-8"><div class="flex items-center justify-center w-10 h-10 rounded-lg bg-red-500/10 flex-shrink-0"><i data-lucide="circle-alert" class="w-5 h-5 text-red-600"></i></div><h2 class="text-xl md:text-2xl font-bold text-slate-900">ツールで解決できる課題</h2></div>
   <div class="space-y-4">
-    <div class="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-center bg-white border border-ads-border rounded-xl p-4">
-      <div class="rounded-lg bg-slate-100 p-4">
-        <div class="text-xs text-ads-muted mb-1">旧文</div>
-        <div class="font-bold text-slate-900">第3条 看護休暇</div>
-      </div>
-      <i data-lucide="arrow-right" class="hidden md:block w-5 h-5 text-ads-dim"></i>
-      <div class="rounded-lg bg-red-500/10 border border-red-500/20 p-4">
-        <div class="text-xs text-red-600 mb-1">新文</div>
-        <div class="font-bold text-red-700">削除状態 または 新文なし</div>
-      </div>
-    </div>
-
-    <div class="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-center bg-white border border-ads-border rounded-xl p-4">
-      <div class="rounded-lg bg-slate-100 p-4">
-        <div class="text-xs text-ads-muted mb-1">旧文</div>
-        <div class="font-bold text-slate-900">なし</div>
-      </div>
-      <i data-lucide="arrow-right" class="hidden md:block w-5 h-5 text-ads-dim"></i>
-      <div class="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-4">
-        <div class="text-xs text-emerald-600 mb-1">新文</div>
-        <div class="font-bold text-emerald-700">第4条の2 新しい条文</div>
-      </div>
-    </div>
-  </div>
-
-  <p class="text-sm text-ads-muted mt-5">
-    条番号の繰り上げや新設番号の調整は、初回版では自動化せず、人間が新文側で編集します。
-  </p>
-</section>
-
-<section class="mb-16 md:mb-20">
-  <div class="flex items-center gap-3 mb-8">
-    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10 flex-shrink-0">
-      <i data-lucide="file-output" class="w-5 h-5 text-blue-600"></i>
-    </div>
-    <h2 class="text-xl md:text-2xl font-bold text-slate-900">出力は新旧対照表Wordを優先</h2>
-  </div>
-
-  <div class="bg-white border border-ads-border rounded-2xl overflow-hidden mb-6">
-    <div class="bg-ads-surface border-b border-ads-border px-5 py-4">
-      <div class="font-bold text-slate-900">常務会提出用の形</div>
-      <div class="text-xs text-ads-muted mt-1">参考: docs/shinkyutaisyou-ex.pdf</div>
-    </div>
-    <div class="p-5">
-      <div class="text-center font-bold text-slate-900 mb-4">修正対象規程のタイトル</div>
-      <div class="grid grid-cols-2 border border-ads-border rounded-xl overflow-hidden">
-        <div class="bg-blue-500/10 text-blue-700 font-bold text-center py-2 border-r border-ads-border">新</div>
-        <div class="bg-slate-100 text-slate-700 font-bold text-center py-2">旧</div>
-        <div class="p-4 border-t border-r border-ads-border text-sm">
-          第1条〜第2条【略】<br>
-          第3条 対象者は、職員、嘱託職員、再雇用嘱託職員とする。<br>
-          第4条〜第30条【略】
-        </div>
-        <div class="p-4 border-t border-ads-border text-sm">
-          第1条〜第2条【略】<br>
-          第3条 対象者は、職員、嘱託職員とする。<br>
-          第4条〜第30条【略】
-        </div>
-      </div>
-      <p class="text-xs text-ads-muted mt-3">修正理由は提出用には出さず、アプリ内部の管理情報として持ちます。</p>
-    </div>
+    <div class="bg-white border border-ads-border rounded-xl p-5"><div class="flex items-start gap-3"><i data-lucide="folder-kanban" class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0"></i><div><h3 class="font-bold text-slate-900 mb-1">大量の規程改正を管理する</h3><p class="text-sm text-ads-muted">大量の規程を修正する際に、修正対象規程ごとの修正内容、修正の進捗状況、修正理由を管理します。複数人で手分けして作業する場合も、どの規程を誰がどこまで直しているかを確認しやすくします。</p></div></div></div>
+    <div class="bg-white border border-ads-border rounded-xl p-5"><div class="flex items-start gap-3"><i data-lucide="file-output" class="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0"></i><div><h3 class="font-bold text-slate-900 mb-1">1回の修正から2つのWord表を作る</h3><p class="text-sm text-ads-muted">社内独自ルールに沿って、機関会議資料としてWord形式の改正規程全文と新旧対照表の2表を作る必要があります。この2表を何度も手修正するのは大変面倒なため、Word作成前に1回の修正で2表作成を補助します。</p></div></div></div>
   </div>
 </section>
 
 <section class="mb-16 md:mb-20">
-  <div class="flex items-center gap-3 mb-8">
-    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500/10 flex-shrink-0">
-      <i data-lucide="file-check-2" class="w-5 h-5 text-emerald-600"></i>
-    </div>
-    <h2 class="text-xl md:text-2xl font-bold text-slate-900">赤字下線入り全文は「作りやすくする」</h2>
-  </div>
-
-  <p class="mb-6">
-    赤字下線入りの改正規程全文も最終的には必要です。ただし初回版では完全自動生成までは狙わず、人間がWord上で作業しやすい材料を出します。
-  </p>
-
-  <div class="grid md:grid-cols-3 gap-4">
-    <div class="bg-white border border-ads-border rounded-xl p-5">
-      <i data-lucide="copy" class="w-6 h-6 text-blue-600 mb-4"></i>
-      <h3 class="font-bold text-slate-900 mb-2">改正後全文テキスト</h3>
-      <p class="text-sm text-ads-muted">新文を規程順に並べた下書きをコピーできるようにします。</p>
-    </div>
-    <div class="bg-white border border-ads-border rounded-xl p-5">
-      <i data-lucide="clipboard-list" class="w-6 h-6 text-blue-600 mb-4"></i>
-      <h3 class="font-bold text-slate-900 mb-2">修正条文一覧</h3>
-      <p class="text-sm text-ads-muted">Word上で赤字下線にすべき条文を一覧で確認します。</p>
-    </div>
-    <div class="bg-white border border-ads-border rounded-xl p-5">
-      <i data-lucide="scan-line" class="w-6 h-6 text-blue-600 mb-4"></i>
-      <h3 class="font-bold text-slate-900 mb-2">条文別プレビュー</h3>
-      <p class="text-sm text-ads-muted">Pane 4で選択中条文の差分を見ながら、Wordで再現します。</p>
-    </div>
+  <div class="flex items-center gap-3 mb-8"><div class="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500/10 flex-shrink-0"><i data-lucide="messages-square" class="w-5 h-5 text-emerald-600"></i></div><h2 class="text-xl md:text-2xl font-bold text-slate-900">工夫したポイント</h2></div>
+  <div class="space-y-4">
+    <div class="bg-white border border-ads-border rounded-xl p-5"><div class="flex items-start gap-3"><i data-lucide="search-check" class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><div><h3 class="font-bold text-slate-900 mb-1">グリルミーで要件を細部まで確認した</h3><p class="text-sm text-ads-muted">最初から大きな機能を作り込むのではなく、グリルミーで質問を重ねながら、初回実装で本当に必要な範囲を確認しました。その結果、対象規程を選ぶ、条文を選ぶ、新文を編集する、差分を見る、という4つに初回範囲を絞りました。</p></div></div></div>
+    <div class="bg-white border border-ads-border rounded-xl p-5"><div class="flex items-start gap-3"><i data-lucide="panel-right-open" class="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0"></i><div><h3 class="font-bold text-slate-900 mb-1">4ペインの責務を先に決めた</h3><p class="text-sm text-ads-muted">Pane 1は規程、Pane 2は条文、Pane 3は編集、Pane 4は差分確認という役割を先に固定したことで、画面上で何をどこに置くか迷いにくくしました。</p></div></div></div>
   </div>
 </section>
 
 <section class="mb-16 md:mb-20">
-  <div class="flex items-center gap-3 mb-8">
-    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-200 flex-shrink-0">
-      <i data-lucide="shield-off" class="w-5 h-5 text-slate-600"></i>
-    </div>
-    <h2 class="text-xl md:text-2xl font-bold text-slate-900">初回版でやらないこと</h2>
-  </div>
-
-  <div class="grid sm:grid-cols-2 gap-3">
-    <div class="flex items-start gap-3 bg-ads-surface border border-ads-border rounded-xl p-4">
-      <i data-lucide="x-circle" class="w-5 h-5 text-ads-dim mt-0.5 flex-shrink-0"></i>
-      <div>
-        <div class="font-bold text-slate-900 text-sm">Wordファイル自動読み込み</div>
-        <div class="text-xs text-ads-muted mt-1">書式や表の揺れが大きいため後回し</div>
-      </div>
-    </div>
-    <div class="flex items-start gap-3 bg-ads-surface border border-ads-border rounded-xl p-4">
-      <i data-lucide="x-circle" class="w-5 h-5 text-ads-dim mt-0.5 flex-shrink-0"></i>
-      <div>
-        <div class="font-bold text-slate-900 text-sm">対象条文の自動抽出</div>
-        <div class="text-xs text-ads-muted mt-1">規程マスタと法務判断が必要</div>
-      </div>
-    </div>
-    <div class="flex items-start gap-3 bg-ads-surface border border-ads-border rounded-xl p-4">
-      <i data-lucide="x-circle" class="w-5 h-5 text-ads-dim mt-0.5 flex-shrink-0"></i>
-      <div>
-        <div class="font-bold text-slate-900 text-sm">外部AIによる本文解析</div>
-        <div class="text-xs text-ads-muted mt-1">社内規程を外部に出さない</div>
-      </div>
-    </div>
-    <div class="flex items-start gap-3 bg-ads-surface border border-ads-border rounded-xl p-4">
-      <i data-lucide="x-circle" class="w-5 h-5 text-ads-dim mt-0.5 flex-shrink-0"></i>
-      <div>
-        <div class="font-bold text-slate-900 text-sm">全文Wordの完全自動生成</div>
-        <div class="text-xs text-ads-muted mt-1">初回版は人間の作業補助を優先</div>
-      </div>
-    </div>
+  <div class="flex items-center gap-3 mb-8"><div class="flex items-center justify-center w-10 h-10 rounded-lg bg-amber-500/10 flex-shrink-0"><i data-lucide="mountain-snow" class="w-5 h-5 text-amber-600"></i></div><h2 class="text-xl md:text-2xl font-bold text-slate-900">苦戦したポイント</h2></div>
+  <div class="space-y-4">
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-5"><h3 class="font-bold text-slate-900 mb-2">Word自動読み込みは初回から入れない判断</h3><p class="text-sm text-ads-muted">規程Wordは表、インデント、別表、様式の揺れが大きく、正確な解析は難易度が高いため後回しにしました。</p></div>
+    <div class="bg-ads-surface border border-ads-border rounded-xl p-5"><h3 class="font-bold text-slate-900 mb-2">実現可能な範囲の見極め</h3><p class="text-sm text-ads-muted">将来的には、影響規程の洗い出しや修正の自動化を目指しています。ただ、現実的に実現可能な範囲にとどめたとき、どこまで作業を簡略化できるかの見極めが困難でした。</p></div>
   </div>
 </section>
-
-<div class="bg-ads-accent/5 border border-ads-accent/20 rounded-2xl p-6 md:p-8 text-center">
-  <i data-lucide="flag" class="w-8 h-8 text-ads-accent mx-auto mb-4"></i>
-  <h2 class="text-xl md:text-2xl font-bold text-slate-900 mb-3">次に決めること</h2>
-  <p class="text-ads-muted mb-5">
-    ここからは、規程・条文・修正状態のデータ構造と、最初に実装する操作フローを具体化します。
-  </p>
-  <div class="flex flex-wrap justify-center gap-2 text-xs">
-    <span class="bg-white border border-ads-border rounded-full px-3 py-1.5">データモデル</span>
-    <span class="bg-white border border-ads-border rounded-full px-3 py-1.5">サンプルデータ</span>
-    <span class="bg-white border border-ads-border rounded-full px-3 py-1.5">初回実装範囲</span>
-    <span class="bg-white border border-ads-border rounded-full px-3 py-1.5">Word出力方式</span>
-  </div>
-</div>
 
   </main>
-  <footer class="max-w-3xl mx-auto px-5 pb-10 pt-6 border-t border-ads-border/30">
-    <p class="text-xs text-ads-dim text-center">クラス・チーム向けツール説明（AI-Driven School）</p>
-  </footer>
+  <footer class="max-w-3xl mx-auto px-5 pb-10 pt-6 border-t border-ads-border/30"><p class="text-xs text-ads-dim text-center">クラス・チーム向けツール説明（AI-Driven School）</p></footer>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script>lucide.createIcons();</script>
 </body>

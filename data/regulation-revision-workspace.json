@@ -1,0 +1,98 @@
+{
+  "id": "rrw-001",
+  "title": "看護休暇制度の改正",
+  "status": "draft",
+  "summary": "育児・介護休業法改正に合わせ、看護休暇の対象範囲と取得単位を見直すための常務会提出資料を作成する。",
+  "regulations": [
+    {
+      "id": "reg-employment",
+      "title": "就業規則",
+      "progressStatus": "editing",
+      "sourceText": "就業規則の全文をここに保持する想定。",
+      "articles": [
+        {
+          "id": "reg-employment-article-1",
+          "order": 1,
+          "kind": "chapter",
+          "label": "第3章",
+          "title": "服務",
+          "oldText": "第3章 服務",
+          "newText": "第3章 服務",
+          "revisionReason": "",
+          "isRevisionTarget": false
+        },
+        {
+          "id": "reg-employment-article-2",
+          "order": 2,
+          "kind": "article",
+          "label": "第24条",
+          "title": "子の看護休暇",
+          "oldText": "小学校就学の始期に達するまでの子を養育する従業員は、負傷し、または疾病にかかった当該子の世話をするため、年次有給休暇とは別に子の看護休暇を取得することができる。\n2 子の看護休暇は、1日または半日単位で取得することができる。",
+          "newText": "小学校第３学年終了前の子を養育する従業員は、負傷し、または疾病にかかった当該子の世話、感染症に伴う学級閉鎖等への対応、または学校行事への参加のため、年次有給休暇とは別に子の看護等休暇を取得することができる。\n2 子の看護等休暇は、1日または時間単位で取得することができる。",
+          "revisionReason": "法改正に合わせ、対象となる子の範囲と取得事由、取得単位を見直す。",
+          "isRevisionTarget": true
+        },
+        {
+          "id": "reg-employment-article-3",
+          "order": 3,
+          "kind": "article",
+          "label": "第25条",
+          "title": "介護休暇",
+          "oldText": "要介護状態にある家族を介護する従業員は、介護休暇を取得することができる。",
+          "newText": "要介護状態にある家族を介護する従業員は、介護休暇を取得することができる。",
+          "revisionReason": "",
+          "isRevisionTarget": false
+        }
+      ]
+    },
+    {
+      "id": "reg-childcare",
+      "title": "育児介護休業規程",
+      "progressStatus": "notStarted",
+      "sourceText": "育児介護休業規程の全文をここに保持する想定。",
+      "articles": [
+        {
+          "id": "reg-childcare-article-1",
+          "order": 1,
+          "kind": "article",
+          "label": "第12条",
+          "title": "子の看護等休暇",
+          "oldText": "小学校就学前の子を養育する従業員は、子の看護休暇を申し出ることができる。",
+          "newText": "小学校第3学年修了前の子を養育する従業員は、子の看護等休暇を申し出ることができる。",
+          "revisionReason": "就業規則の改正内容と用語をそろえる。",
+          "isRevisionTarget": true
+        },
+        {
+          "id": "reg-childcare-article-2",
+          "order": 2,
+          "kind": "article",
+          "label": "第13条",
+          "title": "申出手続",
+          "oldText": "子の看護休暇を取得しようとする者は、原則として前日までに会社へ申し出るものとする。",
+          "newText": "子の看護等休暇を取得しようとする者は、原則として前日までに会社へ申し出るものとする。",
+          "revisionReason": "改正後の休暇名称に合わせる。",
+          "isRevisionTarget": true
+        }
+      ]
+    },
+    {
+      "id": "reg-parttime",
+      "title": "パートタイマー就業規則",
+      "progressStatus": "confirmed",
+      "sourceText": "パートタイマー就業規則の全文をここに保持する想定。",
+      "articles": [
+        {
+          "id": "reg-parttime-article-1",
+          "order": 1,
+          "kind": "article",
+          "label": "第18条",
+          "title": "休暇",
+          "oldText": "パートタイマーの休暇については、就業規則および関係法令の定めるところによる。",
+          "newText": "パートタイマーの休暇については、就業規則、育児介護休業規程および関係法令の定めるところによる。",
+          "revisionReason": "参照先規程を明確にする。",
+          "isRevisionTarget": true
+        }
+      ]
+    }
+  ]
+}

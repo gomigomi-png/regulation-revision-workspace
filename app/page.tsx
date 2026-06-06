@@ -1,35 +1,17 @@
-import { Workspace } from "@/components/workspace/Workspace";
-import positionsData from "@/data/positions.json";
-import candidatesData from "@/data/candidates.json";
-import workspaceData from "@/data/workspace.json";
-import {
-  departmentsSchema,
-  candidatesSchema,
-  workspaceSchema,
-} from "@/lib/schema";
+import { RegulationRevisionWorkspace } from "@/components/regulation-revision/RegulationRevisionWorkspace";
+import regulationRevisionWorkspaceData from "@/data/regulation-revision-workspace.json";
+import { regulationRevisionWorkspaceSchema } from "@/lib/regulation-revision/schema";
 
 export default function Page() {
-  const deptResult = departmentsSchema.safeParse(positionsData);
-  const candResult = candidatesSchema.safeParse(candidatesData);
-  const wsResult = workspaceSchema.safeParse(workspaceData);
+  const workspaceResult = regulationRevisionWorkspaceSchema.safeParse(
+    regulationRevisionWorkspaceData,
+  );
 
-  if (!deptResult.success || !candResult.success || !wsResult.success) {
-    const errors = [
-      !deptResult.success &&
-        `positions.json: ${deptResult.error.issues[0]?.message}`,
-      !candResult.success &&
-        `candidates.json: ${candResult.error.issues[0]?.message}`,
-      !wsResult.success &&
-        `workspace.json: ${wsResult.error.issues[0]?.message}`,
-    ].filter(Boolean);
-    throw new Error(`データの形式が正しくありません:\n${errors.join("\n")}`);
+  if (!workspaceResult.success) {
+    throw new Error(
+      `regulation-revision-workspace.json: ${workspaceResult.error.issues[0]?.message}`,
+    );
   }
 
-  return (
-    <Workspace
-      initialDepartments={deptResult.data}
-      initialCandidates={candResult.data}
-      workspace={wsResult.data}
-    />
-  );
+  return <RegulationRevisionWorkspace initialWorkspace={workspaceResult.data} />;
 }
