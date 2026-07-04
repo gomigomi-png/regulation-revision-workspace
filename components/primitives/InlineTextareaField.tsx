@@ -13,42 +13,65 @@
  * 雛形では「職務経歴」「志望動機」のような長文項目で再利用。
  */
 
+import { useEffect, useState } from "react";
+
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 export type InlineTextareaFieldProps = {
   /** 現在の値（空文字で「未設定」placeholder 表示） */
   value: string;
+  /** 入力中の値変化。即時反映したい親があれば使う */
+  onValueChange?: (v: string) => void;
   /** 値が変わって blur した時に呼ばれる */
   onSave: (v: string) => void;
   /** スクリーンリーダー向けラベル */
   ariaLabel: string;
   /** 空のときの placeholder。デフォルト "未設定" */
   placeholder?: string;
+  /** 個別用途で高さやスクロール挙動を調整したい場合に付与する class */
+  className?: string;
 };
 
 export function InlineTextareaField({
   value,
+  onValueChange,
   onSave,
   ariaLabel,
   placeholder,
+  className,
 }: InlineTextareaFieldProps) {
+  const [draftValue, setDraftValue] = useState(value);
+
+  useEffect(() => {
+    setDraftValue(value);
+  }, [value]);
+
   return (
     <Textarea
-      defaultValue={value}
+      value={draftValue}
       placeholder={placeholder ?? "未設定"}
       aria-label={ariaLabel}
+      onChange={(e) => {
+        setDraftValue(e.target.value);
+        onValueChange?.(e.target.value);
+      }}
       onBlur={(e) => {
-        if (e.target.value !== value) onSave(e.target.value);
+        if (draftValue !== value) onSave(draftValue);
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
           (e.target as HTMLTextAreaElement).blur();
         } else if (e.key === "Escape") {
-          (e.target as HTMLTextAreaElement).value = value;
+          setDraftValue(value);
+          onValueChange?.(value);
           (e.target as HTMLTextAreaElement).blur();
         }
       }}
-      className="min-h-24 bg-card leading-relaxed whitespace-pre-line"
+      className={cn(
+        "min-h-24 bg-card leading-relaxed whitespace-pre-line",
+        className,
+      )}
     />
   );
 }

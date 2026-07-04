@@ -102,7 +102,19 @@
 
 条番号の繰り上げや新設に伴う番号調整は、初回版ではアプリが自動で振り直さず、人間が新文側を編集する。
 
-## 4ペインの仮配置
+## 4ペインの責務（確定版）
+
+規程改正ワークスペースでは、4ペインを以下の役割で固定する。
+
+このワークスペースでは、既存のワークスペース設計ルールとは異なり、Pane 3 を編集画面にする。
+理由は、規程改正作業では「条文を選び、旧文を見ながら新文を直す」ことが中心作業になるため。
+
+4ペインの直感的な役割:
+
+- Pane 1: どの規程を直すか
+- Pane 2: どの条文を直すか
+- Pane 3: どう直すか
+- Pane 4: 直した結果どう見えるか
 
 ### Pane 1: 改正案件内の対象規程リスト
 
@@ -157,7 +169,7 @@ Pane 3 に置くもの:
 - 修正対象指定
   - 必要に応じて操作できるようにする
 
-### Pane 4: 出力・差分・履歴の補助パネル
+### Pane 4: 差分・チェックの補助パネル
 
 Pane 4 は、赤字下線差分プレビューを主役にする。
 
@@ -170,6 +182,9 @@ Pane 4 の補助候補:
 - チェック結果
 
 ただし初回版では、Pane 3 で新文を編集しながら、Pane 4 で選択中条文の差分をすぐ確認できることを優先する。
+
+出力機能は Pane 4 に常駐させない。
+新旧対照表 Word 出力や改正後全文テキストコピーは、選択中条文ではなく規程全体に関わる操作であるため、画面上部または規程単位のアクションとして扱う。
 
 ## 出力方針
 
@@ -207,6 +222,90 @@ Pane 4 の補助候補:
   - Pane 4 で選択中条文について確認する
 
 これにより、人間は既存の旧規程Wordを開き、修正条文一覧とPane 4の差分を見ながら、赤字下線入りの改正規程全文を作成できる。
+
+## データモデル仮型
+
+初回実装では、データモデルを以下の単位に分ける。
+
+- 改正案件
+  - 1つの常務会提案テーマ、または1つの改正作業単位
+  - 複数の対象規程を持つ
+- 対象規程
+  - 規程名、進捗ステータス、貼り付け元の全文、条文ブロック一覧を持つ
+- 条文ブロック
+  - 規程内の表示順を持つ最小編集単位
+  - `第○章`、`第○条`、`附則`、`別表` などを同じ配列で扱う
+  - 旧文と新文を分けて持つ
+
+実装上の仮型は `lib/regulation-revision/schema.ts` に置く。
+
+```ts
+type RegulationRevisionWorkspace = {
+  id: string;
+  title: string;
+  status: "draft" | "reviewing" | "readyForSubmission";
+  summary: string;
+  regulations: RevisionRegulation[];
+};
+
+type RevisionRegulation = {
+  id: string;
+  title: string;
+  progressStatus: "notStarted" | "editing" | "confirmed";
+  sourceText: string;
+  articles: RegulationArticleBlock[];
+};
+
+type RegulationArticleBlock = {
+  id: string;
+  order: number;
+  kind: "chapter" | "article" | "supplementary" | "appendix" | "form" | "other";
+  label: string;
+  title: string;
+  oldText: string | null;
+  newText: string | null;
+  revisionReason: string;
+  isRevisionTarget: boolean;
+};
+```
+
+### 保存する状態と派生する状態
+
+保存する状態:
+
+- 人間が入力した案件名、規程名、本文、修正理由
+- 人間が指定した修正対象フラグ
+- 条文ブロックの順序
+- 旧文・新文の有無
+
+派生する状態:
+
+- 差分あり
+  - `oldText` と `newText` が異なるかどうかで判定する
+- 変更種別
+  - `oldText` あり・`newText` あり・内容差分なし: 変更なし
+  - `oldText` あり・`newText` あり・内容差分あり: 通常修正
+  - `oldText` なし・`newText` あり: 新設
+  - `oldText` あり・`newText` なし: 削除
+
+`差分あり` や `通常修正` は保存せず、出力・表示の直前に派生計算する。
+
+### 出力に必要な派生データ
+
+新旧対照表 Word 出力では、対象規程ごとに以下を作る。
+
+- 変更のある条文行
+  - 条文ラベル
+  - 見出し
+  - 新文
+  - 旧文
+  - 変更種別
+- 変更のない範囲の省略行
+  - 開始条文ラベル
+  - 終了条文ラベル
+
+改正後全文テキストコピーでは、規程内の `articles` を `order` 順に並べ、`newText` を連結する。
+削除条文は `newText` がないため除外し、新設条文は `order` の位置に入る。
 
 ## 将来機能として残すもの
 
