@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { ClipboardCopy, FileText, ListChecks } from "lucide-react";
 
+import { splitRegulationTextToArticleBlocks } from "@/lib/regulation-revision/article-split";
 import {
   type RegulationArticleBlock,
   type RegulationRevisionWorkspace as RegulationRevisionWorkspaceData,
@@ -16,6 +17,7 @@ import {
   CardAction,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -173,6 +175,9 @@ export function RegulationRevisionWorkspace({
   initialWorkspace,
 }: RegulationRevisionWorkspaceProps) {
   const [workspace, setWorkspace] = useState(initialWorkspace);
+  const [sourceTextDrafts, setSourceTextDrafts] = useState<Record<string, string>>(
+    {},
+  );
   const [selectedRegulationId, setSelectedRegulationId] = useState(
     initialWorkspace.regulations[0]?.id ?? "",
   );
@@ -234,6 +239,65 @@ export function RegulationRevisionWorkspace({
     [activeArticle, activeRegulation],
   );
 
+  const updateActiveRegulationSourceText = useCallback(
+    (value: string) => {
+      if (!activeRegulation) return;
+
+      setWorkspace((current) => ({
+        ...current,
+        regulations: current.regulations.map((regulation) => {
+          if (regulation.id !== activeRegulation.id) return regulation;
+
+          return {
+            ...regulation,
+            progressStatus:
+              regulation.progressStatus === "confirmed"
+                ? regulation.progressStatus
+                : "editing",
+            sourceText: value,
+          };
+        }),
+      }));
+    },
+    [activeRegulation],
+  );
+
+  const updateSourceTextDraft = useCallback((regulationId: string, value: string) => {
+    setSourceTextDrafts((current) => ({
+      ...current,
+      [regulationId]: value,
+    }));
+  }, []);
+
+  const generateArticlesForActiveRegulation = useCallback(
+    (sourceText: string) => {
+      if (!activeRegulation) return;
+      if (sourceText.trim() === "") return;
+
+      const nextArticles = splitRegulationTextToArticleBlocks(sourceText);
+      if (nextArticles.length === 0) return;
+
+      setWorkspace((current) => ({
+        ...current,
+        regulations: current.regulations.map((regulation) => {
+          if (regulation.id !== activeRegulation.id) return regulation;
+
+          return {
+            ...regulation,
+            progressStatus:
+              regulation.progressStatus === "confirmed"
+                ? regulation.progressStatus
+                : "editing",
+            sourceText,
+            articles: nextArticles,
+          };
+        }),
+      }));
+      setSelectedArticleId(getFirstActionableArticleId(nextArticles));
+    },
+    [activeRegulation],
+  );
+
   const diffParts = useMemo(
     () =>
       activeArticle
@@ -259,6 +323,9 @@ export function RegulationRevisionWorkspace({
 
   const activeChangeKind = deriveArticleChangeKind(activeArticle);
   const changedArticleCount = countChangedArticles(activeRegulation.articles);
+  const activeSourceText =
+    sourceTextDrafts[activeRegulation.id] ?? activeRegulation.sourceText;
+  const canGenerateArticles = activeSourceText.trim() !== "";
 
   return (
     <SidebarProvider
@@ -355,6 +422,48 @@ export function RegulationRevisionWorkspace({
                 件に差分
               </p>
             </div>
+
+            <Card size="sm" className="m-3">
+              <CardHeader className="border-b">
+                <CardTitle emphasis="prominent">規程本文</CardTitle>
+                <CardDescription>
+                  Wordからコピーした全文を貼り付け、条文候補を生成します。
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-2">
+                <InlineTextareaField
+                  key={`${activeRegulation.id}-source-text`}
+                  value={activeSourceText}
+                  ariaLabel={`${activeRegulation.title}の規程本文`}
+                  placeholder="Wordからコピーした規程全文を貼り付け"
+                  className="max-h-72 overflow-y-auto"
+                  onValueChange={(value) =>
+                    updateSourceTextDraft(activeRegulation.id, value)
+                  }
+                  onSave={(value) => {
+                    updateSourceTextDraft(activeRegulation.id, value);
+                    updateActiveRegulationSourceText(value);
+                  }}
+                />
+                <p className="text-xs text-muted-foreground">
+                  `第○章`、`第○条`、`附則`、`別表` を目印に分割します。
+                </p>
+              </CardContent>
+              <CardFooter className="justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={!canGenerateArticles}
+                  onClick={() => {
+                    updateActiveRegulationSourceText(activeSourceText);
+                    generateArticlesForActiveRegulation(activeSourceText);
+                  }}
+                >
+                  条文候補を生成
+                </Button>
+              </CardFooter>
+            </Card>
 
             <ScrollArea className="min-h-0 flex-1">
               <div className="flex flex-col gap-2 p-3">
