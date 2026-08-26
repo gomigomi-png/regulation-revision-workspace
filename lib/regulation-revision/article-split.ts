@@ -41,9 +41,9 @@ export function splitRegulationTextToArticleBlocks(
   const blocks: RegulationArticleBlock[] = [];
   let currentBlock: PendingBlock | null = null;
 
-  const finishCurrentBlock = () => {
-    if (!currentBlock) return;
-    blocks.push(createBlock(currentBlock, blocks.length + 1));
+  const finishCurrentBlock = (block: PendingBlock | null) => {
+    if (!block) return;
+    blocks.push(createBlock(block, blocks.length + 1));
   };
 
   const startBlock = (
@@ -51,9 +51,9 @@ export function splitRegulationTextToArticleBlocks(
     label: string,
     title: string,
     line: string,
-  ) => {
-    finishCurrentBlock();
-    currentBlock = { kind, label, title, bodyLines: [line] };
+  ): PendingBlock => {
+    finishCurrentBlock(currentBlock);
+    return { kind, label, title, bodyLines: [line] };
   };
 
   for (const line of lines) {
@@ -61,7 +61,7 @@ export function splitRegulationTextToArticleBlocks(
     const articleMatch = headingLine.match(articleHeadingPattern);
 
     if (articleMatch) {
-      startBlock(
+      currentBlock = startBlock(
         "article",
         `第${articleMatch[1]}条`,
         articleMatch[2] ?? articleMatch[3] ?? "",
@@ -73,19 +73,24 @@ export function splitRegulationTextToArticleBlocks(
     const chapterMatch = headingLine.match(chapterHeadingPattern);
 
     if (chapterMatch) {
-      startBlock("chapter", `第${chapterMatch[1]}章`, chapterMatch[2] ?? "", line);
+      currentBlock = startBlock(
+        "chapter",
+        `第${chapterMatch[1]}章`,
+        chapterMatch[2] ?? "",
+        line,
+      );
       continue;
     }
 
     if (supplementaryHeadingPattern.test(headingLine)) {
-      startBlock("supplementary", "附則", "", line);
+      currentBlock = startBlock("supplementary", "附則", "", line);
       continue;
     }
 
     const appendixMatch = headingLine.match(appendixHeadingPattern);
 
     if (appendixMatch) {
-      startBlock(
+      currentBlock = startBlock(
         "appendix",
         `別表${appendixMatch[1] ?? ""}`,
         appendixMatch[2] ?? "",
@@ -99,7 +104,7 @@ export function splitRegulationTextToArticleBlocks(
     }
   }
 
-  finishCurrentBlock();
+  finishCurrentBlock(currentBlock);
 
   return blocks;
 }
