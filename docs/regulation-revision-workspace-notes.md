@@ -1,5 +1,10 @@
 # 規程改正ワークスペース 検討メモ
 
+このメモは、規程改正ワークスペースの**設計判断**（目的・方針・ペイン責務）の正本である。
+
+ファイルのありか、開き方、GitHub 作業手順は [regulation-revision-workspace-guide.md](regulation-revision-workspace-guide.md) を見る。
+画面・データ・出力の流れは [regulation-revision-visual-explainer.md](regulation-revision-visual-explainer.md) を見る。
+
 ## 目的
 
 既存の4ペインひな形をもとに、会社規程の改正作業に使うワークスペースを作る。

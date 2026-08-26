@@ -1,6 +1,6 @@
 # 規程改正ワークスペース 図解
 
-この図解は、`regulation-revision-workspace-notes.md` で固めた初回版の方針を、画面・データ・出力の流れとして整理したもの。
+この図解は、`docs/regulation-revision-workspace-notes.md` で固めた初回版の方針を、画面・データ・出力の流れとして整理したもの。
 
 ## 1. 全体像
 
