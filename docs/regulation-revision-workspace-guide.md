@@ -1,16 +1,111 @@
 # 規程改正ワークスペース 作業ガイド
 
-このドキュメントは、ひな形（採用管理サンプル）と混ざっているリポジトリの中で、**規程改正ワークスペースを開く・見つける・GitHub で進める**ための手引です。
+このドキュメントは、ひな形（採用管理サンプル）と混ざっているリポジトリの中で、**規程改正ワークスペースを開く・見つける・GitHub / Vercel / Neon で進める**ための手引です。
 
 設計の理由やペイン責務は、検討メモ `docs/regulation-revision-workspace-notes.md` を正本にする。
 画面・データ・出力の流れは `docs/regulation-revision-visual-explainer.md` を見る。
 
 ## 結論
 
-- ブラウザで見る画面は **http://localhost:3000** だけ。別URLはない
-- 起動コマンドは `npm run dev`
+- 自分の PC で見る画面は **http://localhost:3000**（`npm run dev`）
+- インターネット公開の画面は **https://regulation-revision-workspace.vercel.app**（Vercel の Visit）
 - 規程改正の本体は `components/regulation-revision/` と `data/regulation-revision-workspace.json`
 - `components/workspace/` と `data/candidates.json` は採用管理サンプル。今のトップページには出ない
+- いまのデータはまだ JSON。リロードすると入力は消える。保存先の箱（Neon）は用意済みで、読み書きは次の作業
+
+## GitHub / Vercel / Neon の違い
+
+3つは別物である。混ぜると「コードを直したのに画面が変わらない」「箱はあるのに消える」が起きる。
+
+| 名前 | たとえ | このプロジェクトでの役割 |
+|---|---|---|
+| **GitHub** | 原稿の倉庫 | コードの履歴を置く。リモート名は `github`。リポジトリは `gomigomi-png/regulation-revision-workspace` |
+| **Vercel** | 公開用の店 | GitHub のコードを組み立てて URL で公開する。プロジェクト名は `regulation-revision-workspace` |
+| **Neon** | 店の奥のキャビネット | 表形式のデータベース（中身は Postgres）。案件・規程・条文を将来しまっておく箱 |
+
+関係は一方向である。
+
+```text
+手元の編集
+  → GitHub に push（原稿を倉庫へ）
+  → Vercel が組み立てて公開（店に並べる）
+  → Neon に保存する（まだ未接続。箱だけある）
+```
+
+### 似ているが違う言葉
+
+| 言葉 | 意味 |
+|---|---|
+| **リポジトリ** | GitHub 上の1つの倉庫。コードが入る |
+| **Vercel プロジェクト** | Vercel 上の1つの店。公開設定と環境変数を持つ |
+| **デプロイ** | 倉庫の原稿から店の商品を組み立てて並べること。成功すると Ready |
+| **環境変数** | コードに書かない設定。接続先 `DATABASE_URL` など。値はパスワードと同じ |
+| **Postgres** | 表（行と列）でデータを置くデータベースの種類。Neon の中身 |
+| **Hobby** | Vercel の無料枠。鍵つきリポジトリの共同公開は制限がある |
+
+手元の `localhost:3000` は自分の PC の確認用である。Vercel の URL は他の人も開ける公開用である。いまは両方とも同じ JSON ダミーを表示する。
+
+学校配布のリモートは `origin`、自分の GitHub は `github` である。公開と Neon は自分の GitHub / Vercel 側で進めている。
+
+## 学習の5ステップと、ここまでやったこと
+
+勉強のゴールは次の3つである。
+
+- リロードしても、入力したデータが消えない
+- 別の端末や他の人からも、公開したアプリを開ける
+- 「どのデータを、どこに、なぜ保存したか」を自分の言葉で説明できる
+
+進め方は5ステップである。
+
+| ステップ | 内容 | 状態 |
+|---|---|---|
+| ① | 何をどこに保存するか決める | 完了。案Aの3表 |
+| ② | データベースの箱を用意する | 完了。Neon と `DATABASE_URL` |
+| ③ | 保存の仕組みを作る | これから |
+| ④ | リロードで消えないか確認する | 未着手 |
+| ⑤ | Vercel に公開する | 画面の公開は完了。保存つき公開は③のあと |
+
+### ①で決めたこと
+
+画面の入れ子を、そのまま3つの表にする（案A）。
+
+| 表 | 何を置くか |
+|---|---|
+| `workspaces` | 改正案件（例: 看護休暇制度の改正） |
+| `regulations` | 対象規程（例: 就業規則） |
+| `articles` | 条文（例: 第24条） |
+
+紐付けは「案件 1 対 多 規程」「規程 1 対 多 条文」。
+差分ありや赤字下線は保存せず、旧文と新文から計算する。
+履歴表（案D）は将来必ず欲しいが、今は作らない。
+ブラウザの `localStorage`（その PC のメモ帳）にはしない。公開と説明のため、Neon 上の表にする。
+
+### 画面側で直したこと（保存の前）
+
+- 条文候補の生成前に確認する。誤って押し直すと編集が消えるため
+- Pane 4 の赤字下線を、サンプル第24条専用ではなく、どの条文でも同じ文字比較にする
+- 本番ビルド（`npm run build`）で落ちていた条文分割の型エラーを直す
+
+規程追加・条文の新設削除・Word 出力は、記憶の前提ではないので後回しである。
+
+### ②でやったこと（箱と店）
+
+- GitHub に規程改正のコードを push した
+- Vercel に `regulation-revision-workspace` を作り、GitHub から輸入（Import）してデプロイした
+- Hobby の鍵つきリポジトリ制限でデプロイがブロックされたため、GitHub リポジトリを Public にし、Vercel プロジェクトを消してもう一度輸入した。その結果 Ready になった
+- Visit で公開画面が出る
+- このプロジェクトの Storage に Neon を足した
+- Environment Variables に `DATABASE_URL` がある。Neon が足した別名（`PGHOST` など）も並ぶが、消さない。アプリが使うのは `DATABASE_URL`
+- 無関係だった Vercel プロジェクト `commenting-visual-explainers` は削除した
+- 手元用のひな形は `.env.example`。本物の値は `.env.local` に書き、GitHub には上げない
+
+接続文字列はチャットや GitHub に貼らない。
+
+### まだやっていないこと
+
+- 3表を Neon の中に作ること
+- 画面の読み書きを JSON から Neon に切り替えること
+- リロードしても編集が残ること（③と④）
 
 ## ひな形との関係
 
@@ -24,7 +119,7 @@
 |---|---|
 | `README.md` | 採用管理ひな形の手引。先頭に規程改正ドキュメントへの案内あり |
 | `docs/regulation-revision-workspace-notes.md` | 規程改正の設計検討メモ（目的・方針・ペイン責務） |
-| このドキュメント | 規程改正のファイルのありか・開き方・GitHub 作業 |
+| このドキュメント | 規程改正のファイルのありか・開き方・GitHub / Vercel / Neon の整理 |
 
 README のスクリーンショットは採用管理のままなので、見た目の手がかりには使わない。
 
@@ -89,6 +184,8 @@ Cursor で中身を追うときは、この順で開く。
 | 画面データ | `data/regulation-revision-workspace.json` |
 | 型・検証 | `lib/regulation-revision/schema.ts` |
 | 条文分割 | `lib/regulation-revision/article-split.ts` |
+| 赤字下線の比較 | `lib/regulation-revision/diff.ts` |
+| 接続設定のひな形 | `.env.example`（値は入れない） |
 | テスト | `__tests__/regulation-revision-*.ts(x)` |
 | 検討メモ | `docs/regulation-revision-workspace-notes.md` |
 | 図解 | `docs/regulation-revision-visual-explainer.md` |
