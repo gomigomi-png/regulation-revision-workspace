@@ -66,13 +66,33 @@ const workspaceFixture: RegulationRevisionWorkspaceData = {
 };
 
 describe("RegulationRevisionWorkspace", () => {
-  it("貼り付け直後の規程本文から条文候補を生成できる", () => {
+  it("条文候補の生成前に確認し、確定するまで既存条文を残す", () => {
     render(<RegulationRevisionWorkspace initialWorkspace={workspaceFixture} />);
 
     fireEvent.change(screen.getByLabelText("就業規則の規程本文"), {
       target: { value: sampleRegulationText },
     });
     fireEvent.click(screen.getByRole("button", { name: "条文候補を生成" }));
+
+    expect(
+      screen.getByRole("alertdialog", { name: "既存の条文を置き換えますか？" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("第99条")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
+
+    expect(screen.getByText("第99条")).toBeInTheDocument();
+    expect(screen.queryByText("第1章")).not.toBeInTheDocument();
+  });
+
+  it("確認後に貼り付けた規程本文から条文候補を生成できる", () => {
+    render(<RegulationRevisionWorkspace initialWorkspace={workspaceFixture} />);
+
+    fireEvent.change(screen.getByLabelText("就業規則の規程本文"), {
+      target: { value: sampleRegulationText },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "条文候補を生成" }));
+    fireEvent.click(screen.getByRole("button", { name: "置き換えて生成" }));
 
     expect(screen.getByText("第1章")).toBeInTheDocument();
     expect(screen.getByText("第6条")).toBeInTheDocument();

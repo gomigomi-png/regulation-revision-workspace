@@ -4,12 +4,23 @@ import { useCallback, useMemo, useState } from "react";
 import { ClipboardCopy, FileText, ListChecks } from "lucide-react";
 
 import { splitRegulationTextToArticleBlocks } from "@/lib/regulation-revision/article-split";
+import { createDiffParts } from "@/lib/regulation-revision/diff";
 import {
   type RegulationArticleBlock,
   type RegulationRevisionWorkspace as RegulationRevisionWorkspaceData,
   deriveArticleChangeKind,
   hasArticleDiff,
 } from "@/lib/regulation-revision/schema";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -80,73 +91,6 @@ function changeBadgeVariant(
   return "secondary";
 }
 
-function createDiffParts(oldText: string | null, newText: string | null) {
-  if (newText === null) {
-    return [{ value: "（削除）", changed: true }];
-  }
-
-  if (oldText === null || oldText === newText) {
-    return [{ value: newText, changed: oldText === null && newText.length > 0 }];
-  }
-
-  if (newText.includes("小学校第３学年終了前")) {
-    return createMarkedParts(newText, [
-      "第３学年終了前",
-      "、感染症に伴う学級閉鎖等への対応、または学校行事への参加の",
-      "等",
-      "等",
-      "時間",
-    ]);
-  }
-
-  let prefixLength = 0;
-  while (
-    prefixLength < oldText.length &&
-    prefixLength < newText.length &&
-    oldText[prefixLength] === newText[prefixLength]
-  ) {
-    prefixLength++;
-  }
-
-  let oldSuffixIndex = oldText.length - 1;
-  let newSuffixIndex = newText.length - 1;
-  while (
-    oldSuffixIndex >= prefixLength &&
-    newSuffixIndex >= prefixLength &&
-    oldText[oldSuffixIndex] === newText[newSuffixIndex]
-  ) {
-    oldSuffixIndex--;
-    newSuffixIndex--;
-  }
-
-  return [
-    { value: newText.slice(0, prefixLength), changed: false },
-    { value: newText.slice(prefixLength, newSuffixIndex + 1), changed: true },
-    { value: newText.slice(newSuffixIndex + 1), changed: false },
-  ].filter((part) => part.value.length > 0);
-}
-
-function createMarkedParts(text: string, marks: string[]) {
-  const parts: { value: string; changed: boolean }[] = [];
-  let cursor = 0;
-
-  for (const mark of marks) {
-    const start = text.indexOf(mark, cursor);
-    if (start < 0) continue;
-    if (start > cursor) {
-      parts.push({ value: text.slice(cursor, start), changed: false });
-    }
-    parts.push({ value: mark, changed: true });
-    cursor = start + mark.length;
-  }
-
-  if (cursor < text.length) {
-    parts.push({ value: text.slice(cursor), changed: false });
-  }
-
-  return parts;
-}
-
 function countChangedArticles(articles: RegulationArticleBlock[]) {
   return articles.filter((article) => hasArticleDiff(article)).length;
 }
@@ -178,6 +122,9 @@ export function RegulationRevisionWorkspace({
   const [sourceTextDrafts, setSourceTextDrafts] = useState<Record<string, string>>(
     {},
   );
+  const [pendingGenerateSourceText, setPendingGenerateSourceText] = useState<
+    string | null
+  >(null);
   const [selectedRegulationId, setSelectedRegulationId] = useState(
     initialWorkspace.regulations[0]?.id ?? "",
   );
@@ -455,10 +402,7 @@ export function RegulationRevisionWorkspace({
                   variant="outline"
                   size="sm"
                   disabled={!canGenerateArticles}
-                  onClick={() => {
-                    updateActiveRegulationSourceText(activeSourceText);
-                    generateArticlesForActiveRegulation(activeSourceText);
-                  }}
+                  onClick={() => setPendingGenerateSourceText(activeSourceText)}
                 >
                   条文候補を生成
                 </Button>
@@ -689,6 +633,37 @@ export function RegulationRevisionWorkspace({
           </aside>
         </div>
       </SidebarInset>
+
+      <AlertDialog
+        open={pendingGenerateSourceText !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingGenerateSourceText(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>既存の条文を置き換えますか？</AlertDialogTitle>
+            <AlertDialogDescription>
+              「{activeRegulation.title}」の条文リスト、新文、修正理由は、貼り付けた本文から作り直した候補に置き換わります。この操作は取り消せません。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingGenerateSourceText === null) return;
+
+                const sourceText = pendingGenerateSourceText;
+                setPendingGenerateSourceText(null);
+                updateActiveRegulationSourceText(sourceText);
+                generateArticlesForActiveRegulation(sourceText);
+              }}
+            >
+              置き換えて生成
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarProvider>
   );
 }
