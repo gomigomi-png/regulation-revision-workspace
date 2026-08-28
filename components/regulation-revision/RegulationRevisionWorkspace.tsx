@@ -608,7 +608,7 @@ export function RegulationRevisionWorkspace({
             </ScrollArea>
           </section>
 
-          <main className="flex min-w-0 flex-1 flex-col bg-gradient-to-b from-background via-card/60 to-background">
+          <main className="flex min-h-0 min-w-0 flex-1 max-w-3xl flex-col bg-gradient-to-b from-background via-card/60 to-background">
             <ScrollArea className="min-h-0 flex-1">
               <div className="flex flex-col gap-4 p-4">
                 <Card>
@@ -682,7 +682,7 @@ export function RegulationRevisionWorkspace({
             </ScrollArea>
           </main>
 
-          <aside className="flex w-96 shrink-0 flex-col border-l bg-gradient-to-b from-canvas via-card to-background">
+          <aside className="flex min-h-0 min-w-96 flex-1 flex-col border-l bg-gradient-to-b from-canvas via-card to-background">
             <div className="flex min-h-16 shrink-0 flex-col gap-1 border-b bg-card/70 px-4 py-3 backdrop-blur">
               <div className="flex items-center justify-between gap-2">
                 <h2 className="truncate text-sm font-semibold">差分プレビュー</h2>
