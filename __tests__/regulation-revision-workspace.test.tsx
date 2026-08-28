@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { RegulationRevisionWorkspace } from "@/components/regulation-revision/RegulationRevisionWorkspace";
 import { type RegulationRevisionWorkspace as RegulationRevisionWorkspaceData } from "@/lib/regulation-revision/schema";
@@ -99,4 +99,44 @@ describe("RegulationRevisionWorkspace", () => {
     expect(screen.getByLabelText("第1章の新文")).toHaveValue("第1章 総則");
     expect(screen.queryByText("第99条")).not.toBeInTheDocument();
   });
+
+  it("選択中規程の改正後全文を HTML 付きでクリップボードへコピーする", async () => {
+    class MockClipboardItem {
+      constructor(private readonly items: Record<string, Blob>) {}
+
+      getType(type: string) {
+        const blob = this.items[type];
+        if (!blob) {
+          throw new Error(`Missing clipboard type: ${type}`);
+        }
+        return Promise.resolve(blob);
+      }
+    }
+
+    const write = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(globalThis, "ClipboardItem", {
+      configurable: true,
+      value: MockClipboardItem,
+    });
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { write, writeText: vi.fn() },
+    });
+
+    render(<RegulationRevisionWorkspace initialWorkspace={workspaceFixture} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "改正後全文をコピー" }));
+
+    await waitFor(() => {
+      expect(write).toHaveBeenCalledTimes(1);
+    });
+    expect(
+      screen.getByRole("button", { name: "コピーしました" }),
+    ).toBeInTheDocument();
+  });
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  Reflect.deleteProperty(globalThis, "ClipboardItem");
 });

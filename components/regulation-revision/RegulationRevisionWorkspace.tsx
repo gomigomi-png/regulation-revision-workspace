@@ -4,6 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ClipboardCopy, FileText, ListChecks } from "lucide-react";
 
 import { saveRegulationRevisionWorkspace } from "@/app/actions/regulation-revision";
+import {
+  buildAmendedFullTextClipboardPayload,
+  copyAmendedFullTextToClipboard,
+} from "@/lib/regulation-revision/amended-full-text";
 import { splitRegulationTextToArticleBlocks } from "@/lib/regulation-revision/article-split";
 import { createDiffParts } from "@/lib/regulation-revision/diff";
 import { downloadShinkyutaisyoDocx } from "@/lib/regulation-revision/shinkyutaisyo-docx";
@@ -143,6 +147,12 @@ export function RegulationRevisionWorkspace({
   const [isExportingWord, setIsExportingWord] = useState(false);
   const [wordExportError, setWordExportError] = useState<string | null>(null);
   const isExportingWordRef = useRef(false);
+  const [copyFullTextStatus, setCopyFullTextStatus] = useState<"idle" | "copied">(
+    "idle",
+  );
+  const [copyFullTextError, setCopyFullTextError] = useState<string | null>(null);
+  const [copyFullTextEmptyOpen, setCopyFullTextEmptyOpen] = useState(false);
+  const copyFullTextResetTimerRef = useRef<number | null>(null);
   const [selectedRegulationId, setSelectedRegulationId] = useState(
     initialWorkspace.regulations[0]?.id ?? "",
   );
@@ -328,6 +338,42 @@ export function RegulationRevisionWorkspace({
     void exportActiveRegulationWord();
   }, [activeRegulation, exportActiveRegulationWord]);
 
+  const copyAmendedFullText = useCallback(async () => {
+    if (!activeRegulation) return;
+
+    const { plain } = buildAmendedFullTextClipboardPayload(activeRegulation.articles);
+    if (plain.trim() === "") {
+      setCopyFullTextEmptyOpen(true);
+      return;
+    }
+
+    try {
+      await copyAmendedFullTextToClipboard(activeRegulation.articles);
+      setCopyFullTextError(null);
+      setCopyFullTextStatus("copied");
+      if (copyFullTextResetTimerRef.current !== null) {
+        window.clearTimeout(copyFullTextResetTimerRef.current);
+      }
+      copyFullTextResetTimerRef.current = window.setTimeout(() => {
+        setCopyFullTextStatus("idle");
+        copyFullTextResetTimerRef.current = null;
+      }, 2000);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "クリップボードへのコピーに失敗しました";
+      console.error(error);
+      setCopyFullTextError(message);
+    }
+  }, [activeRegulation]);
+
+  useEffect(() => {
+    return () => {
+      if (copyFullTextResetTimerRef.current !== null) {
+        window.clearTimeout(copyFullTextResetTimerRef.current);
+      }
+    };
+  }, []);
+
   const diffParts = useMemo(
     () =>
       activeArticle
@@ -429,9 +475,18 @@ export function RegulationRevisionWorkspace({
                 <FileText data-icon="inline-start" aria-hidden />
                 {isExportingWord ? "出力中…" : "新旧対照表をWord出力"}
               </Button>
-              <Button type="button" variant="secondary" size="sm">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  void copyAmendedFullText();
+                }}
+              >
                 <ClipboardCopy data-icon="inline-start" aria-hidden />
-                改正後全文をコピー
+                {copyFullTextStatus === "copied"
+                  ? "コピーしました"
+                  : "改正後全文をコピー"}
               </Button>
               <Button type="button" variant="outline" size="sm">
                 <ListChecks data-icon="inline-start" aria-hidden />
@@ -802,6 +857,48 @@ export function RegulationRevisionWorkspace({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={() => setWordExportError(null)}>
+              閉じる
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={copyFullTextEmptyOpen}
+        onOpenChange={setCopyFullTextEmptyOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>コピーする条文がありません</AlertDialogTitle>
+            <AlertDialogDescription>
+              「{activeRegulation.title}」には改正後として連結できる条文がありません。削除されていない条文の新文があるか確認してください。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setCopyFullTextEmptyOpen(false)}>
+              閉じる
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={copyFullTextError !== null}
+        onOpenChange={(open) => {
+          if (!open) setCopyFullTextError(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>コピーに失敗しました</AlertDialogTitle>
+            <AlertDialogDescription>
+              {copyFullTextError}
+              {" "}
+              ブラウザがクリップボードへのアクセスを拒否している場合は、サイトの権限設定を確認してください。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setCopyFullTextError(null)}>
               閉じる
             </AlertDialogAction>
           </AlertDialogFooter>
