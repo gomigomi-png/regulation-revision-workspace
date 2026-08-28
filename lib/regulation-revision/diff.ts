@@ -3,12 +3,12 @@ export type DiffPart = {
   changed: boolean;
 };
 
-type DiffSegment = {
+export type DiffSegment = {
   type: "equal" | "added" | "removed";
   text: string;
 };
 
-function diffCharacters(oldText: string, newText: string): DiffSegment[] {
+export function diffCharacters(oldText: string, newText: string): DiffSegment[] {
   const original = [...oldText];
   const revised = [...newText];
   const dp = Array.from({ length: original.length + 1 }, () =>
