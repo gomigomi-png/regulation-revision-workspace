@@ -6,6 +6,8 @@ import { ClipboardCopy, FileText, ListChecks } from "lucide-react";
 import { saveRegulationRevisionWorkspace } from "@/app/actions/regulation-revision";
 import { splitRegulationTextToArticleBlocks } from "@/lib/regulation-revision/article-split";
 import { createDiffParts } from "@/lib/regulation-revision/diff";
+import { downloadShinkyutaisyoDocx } from "@/lib/regulation-revision/shinkyutaisyo-docx";
+import { countChangedArticles } from "@/lib/regulation-revision/shinkyutaisyo";
 import {
   type RegulationArticleBlock,
   type RegulationRevisionWorkspace as RegulationRevisionWorkspaceData,
@@ -102,10 +104,6 @@ function changeBadgeVariant(
   return "secondary";
 }
 
-function countChangedArticles(articles: RegulationArticleBlock[]) {
-  return articles.filter((article) => hasArticleDiff(article)).length;
-}
-
 function getInitialArticleId(workspace: RegulationRevisionWorkspaceData) {
   const firstRegulation = workspace.regulations[0];
   return (
@@ -140,6 +138,11 @@ export function RegulationRevisionWorkspace({
   const [pendingGenerateSourceText, setPendingGenerateSourceText] = useState<
     string | null
   >(null);
+  const [pendingWordExportWithoutDiffs, setPendingWordExportWithoutDiffs] =
+    useState(false);
+  const [isExportingWord, setIsExportingWord] = useState(false);
+  const [wordExportError, setWordExportError] = useState<string | null>(null);
+  const isExportingWordRef = useRef(false);
   const [selectedRegulationId, setSelectedRegulationId] = useState(
     initialWorkspace.regulations[0]?.id ?? "",
   );
@@ -290,6 +293,41 @@ export function RegulationRevisionWorkspace({
     [activeRegulation],
   );
 
+  const exportActiveRegulationWord = useCallback(async () => {
+    if (!activeRegulation || isExportingWordRef.current) return;
+
+    isExportingWordRef.current = true;
+    setIsExportingWord(true);
+    setWordExportError(null);
+
+    try {
+      await downloadShinkyutaisyoDocx(activeRegulation);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
+      const message =
+        error instanceof Error ? error.message : "Word出力に失敗しました";
+      console.error(error);
+      setWordExportError(message);
+    } finally {
+      isExportingWordRef.current = false;
+      setIsExportingWord(false);
+    }
+  }, [activeRegulation]);
+
+  const requestWordExport = useCallback(() => {
+    if (!activeRegulation) return;
+
+    if (countChangedArticles(activeRegulation.articles) === 0) {
+      setPendingWordExportWithoutDiffs(true);
+      return;
+    }
+
+    void exportActiveRegulationWord();
+  }, [activeRegulation, exportActiveRegulationWord]);
+
   const diffParts = useMemo(
     () =>
       activeArticle
@@ -382,9 +420,14 @@ export function RegulationRevisionWorkspace({
           </div>
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
             <div className="flex flex-wrap items-center justify-end gap-1.5">
-              <Button type="button" size="sm">
+              <Button
+                type="button"
+                size="sm"
+                disabled={isExportingWord}
+                onClick={requestWordExport}
+              >
                 <FileText data-icon="inline-start" aria-hidden />
-                新旧対照表をWord出力
+                {isExportingWord ? "出力中…" : "新旧対照表をWord出力"}
               </Button>
               <Button type="button" variant="secondary" size="sm">
                 <ClipboardCopy data-icon="inline-start" aria-hidden />
@@ -712,6 +755,54 @@ export function RegulationRevisionWorkspace({
               }}
             >
               置き換えて生成
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={pendingWordExportWithoutDiffs}
+        onOpenChange={setPendingWordExportWithoutDiffs}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>変更のある条文がありません</AlertDialogTitle>
+            <AlertDialogDescription>
+              「{activeRegulation.title}」には差分のある条文がありません。それでも新旧対照表を出力しますか？
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setPendingWordExportWithoutDiffs(false);
+                void exportActiveRegulationWord();
+              }}
+            >
+              それでも出力
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={wordExportError !== null}
+        onOpenChange={(open) => {
+          if (!open) setWordExportError(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Word出力に失敗しました</AlertDialogTitle>
+            <AlertDialogDescription>
+              {wordExportError}
+              {" "}
+              ブラウザがダウンロードをブロックしている場合は、アドレスバー付近の許可を確認してください。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setWordExportError(null)}>
+              閉じる
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
