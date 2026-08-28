@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ClipboardCopy, FileText, ListChecks } from "lucide-react";
 
+import { saveRegulationRevisionWorkspace } from "@/app/actions/regulation-revision";
 import { splitRegulationTextToArticleBlocks } from "@/lib/regulation-revision/article-split";
 import { createDiffParts } from "@/lib/regulation-revision/diff";
 import {
@@ -53,6 +54,16 @@ import { cn } from "@/lib/utils";
 
 type RegulationRevisionWorkspaceProps = {
   initialWorkspace: RegulationRevisionWorkspaceData;
+  persistToDatabase?: boolean;
+};
+
+type SaveStatus = "idle" | "saving" | "saved" | "error";
+
+const saveStatusLabels: Record<SaveStatus, string> = {
+  idle: "",
+  saving: "保存中…",
+  saved: "保存済み",
+  error: "保存失敗",
 };
 
 const progressLabels = {
@@ -117,8 +128,12 @@ function getFirstActionableArticleId(articles: RegulationArticleBlock[]) {
 
 export function RegulationRevisionWorkspace({
   initialWorkspace,
+  persistToDatabase = false,
 }: RegulationRevisionWorkspaceProps) {
   const [workspace, setWorkspace] = useState(initialWorkspace);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const skipNextSaveRef = useRef(true);
+  const saveRequestIdRef = useRef(0);
   const [sourceTextDrafts, setSourceTextDrafts] = useState<Record<string, string>>(
     {},
   );
@@ -131,6 +146,36 @@ export function RegulationRevisionWorkspace({
   const [selectedArticleId, setSelectedArticleId] = useState(
     getInitialArticleId(initialWorkspace),
   );
+
+  useEffect(() => {
+    if (!persistToDatabase) return;
+    if (skipNextSaveRef.current) {
+      skipNextSaveRef.current = false;
+      return;
+    }
+
+    const requestId = ++saveRequestIdRef.current;
+    setSaveStatus("saving");
+
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        const result = await saveRegulationRevisionWorkspace(workspace);
+        if (requestId !== saveRequestIdRef.current) return;
+
+        if (result.ok) {
+          setSaveStatus("saved");
+          return;
+        }
+
+        setSaveStatus("error");
+        console.error(result.error);
+      })();
+    }, 600);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [persistToDatabase, workspace]);
 
   const activeRegulation = useMemo(
     () =>
@@ -351,6 +396,13 @@ export function RegulationRevisionWorkspace({
               </Button>
             </div>
             <Badge variant="outline">{workspaceStatusLabels[workspace.status]}</Badge>
+            {persistToDatabase && saveStatus !== "idle" ? (
+              <Badge
+                variant={saveStatus === "error" ? "destructive" : "outline"}
+              >
+                {saveStatusLabels[saveStatus]}
+              </Badge>
+            ) : null}
             <Badge variant="secondary">{activeRegulation.title}</Badge>
           </div>
         </header>

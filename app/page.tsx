@@ -1,8 +1,12 @@
 import { RegulationRevisionWorkspace } from "@/components/regulation-revision/RegulationRevisionWorkspace";
 import regulationRevisionWorkspaceData from "@/data/regulation-revision-workspace.json";
+import { hasDatabaseUrl } from "@/lib/regulation-revision/db/client";
+import { getWorkspaceById } from "@/lib/regulation-revision/db/repository";
 import { regulationRevisionWorkspaceSchema } from "@/lib/regulation-revision/schema";
 
-export default function Page() {
+const DEFAULT_WORKSPACE_ID = "rrw-001";
+
+function loadFallbackWorkspace() {
   const workspaceResult = regulationRevisionWorkspaceSchema.safeParse(
     regulationRevisionWorkspaceData,
   );
@@ -13,5 +17,26 @@ export default function Page() {
     );
   }
 
-  return <RegulationRevisionWorkspace initialWorkspace={workspaceResult.data} />;
+  return workspaceResult.data;
+}
+
+export default async function Page() {
+  let workspaceFromDatabase = null;
+
+  if (hasDatabaseUrl()) {
+    try {
+      workspaceFromDatabase = await getWorkspaceById(DEFAULT_WORKSPACE_ID);
+    } catch (error) {
+      console.error("Failed to load workspace from Neon:", error);
+    }
+  }
+
+  const initialWorkspace = workspaceFromDatabase ?? loadFallbackWorkspace();
+
+  return (
+    <RegulationRevisionWorkspace
+      initialWorkspace={initialWorkspace}
+      persistToDatabase={workspaceFromDatabase !== null}
+    />
+  );
 }
