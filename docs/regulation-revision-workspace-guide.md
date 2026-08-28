@@ -8,10 +8,10 @@
 ## 結論
 
 - 自分の PC で見る画面は **http://localhost:3000**（`npm run dev`）
-- インターネット公開の画面は **https://regulation-revision-workspace.vercel.app**（Vercel の Visit）
-- 規程改正の本体は `components/regulation-revision/` と `data/regulation-revision-workspace.json`
+- **公開 URL** は **https://regulation-revision-workspace.vercel.app**（Vercel の Visit。他の人も開ける）
+- 規程改正の本体は `components/regulation-revision/`。初期見本は `data/regulation-revision-workspace.json`
 - `components/workspace/` と `data/candidates.json` は採用管理サンプル。今のトップページには出ない
-- いまのデータはまだ JSON。リロードすると入力は消える。保存先の箱（Neon）は用意済みで、読み書きは次の作業
+- データの正本は **Neon**。編集は自動保存され、リロードしても残る（手元も公開 URL も同じ箱を見る）
 
 ## GitHub / Vercel / Neon の違い
 
@@ -21,15 +21,17 @@
 |---|---|---|
 | **GitHub** | 原稿の倉庫 | コードの履歴を置く。リモート名は `github`。リポジトリは `gomigomi-png/regulation-revision-workspace` |
 | **Vercel** | 公開用の店 | GitHub のコードを組み立てて URL で公開する。プロジェクト名は `regulation-revision-workspace` |
-| **Neon** | 店の奥のキャビネット | 表形式のデータベース（中身は Postgres）。案件・規程・条文を将来しまっておく箱 |
+| **Neon** | 店の奥のキャビネット | 表形式のデータベース（中身は Postgres）。案件・規程・条文をしまっておく箱 |
 
-関係は一方向である。
+コードの公開と、データの保存は別物である。
 
 ```text
-手元の編集
+手元の編集（コード）
   → GitHub に push（原稿を倉庫へ）
   → Vercel が組み立てて公開（店に並べる）
-  → Neon に保存する（まだ未接続。箱だけある）
+
+手元 / 公開画面での編集（データ）
+  → Neon に保存する（キャビネットへ）
 ```
 
 ### 似ているが違う言葉
@@ -43,7 +45,7 @@
 | **Postgres** | 表（行と列）でデータを置くデータベースの種類。Neon の中身 |
 | **Hobby** | Vercel の無料枠。鍵つきリポジトリの共同公開は制限がある |
 
-手元の `localhost:3000` は自分の PC の確認用である。Vercel の URL は他の人も開ける公開用である。いまは両方とも同じ JSON ダミーを表示する。
+手元の `localhost:3000` は自分の PC の確認用である。**公開 URL**（`https://regulation-revision-workspace.vercel.app`）は他の人も開ける公開用である。どちらも Neon の同じデータを読む。
 
 学校配布のリモートは `origin`、自分の GitHub は `github` である。公開と Neon は自分の GitHub / Vercel 側で進めている。
 
@@ -61,9 +63,9 @@
 |---|---|---|
 | ① | 何をどこに保存するか決める | 完了。案Aの3表 |
 | ② | データベースの箱を用意する | 完了。Neon と `DATABASE_URL` |
-| ③ | 保存の仕組みを作る | これから |
-| ④ | リロードで消えないか確認する | 未着手 |
-| ⑤ | Vercel に公開する | 画面の公開は完了。保存つき公開は③のあと |
+| ③ | 保存の仕組みを作る | 完了。3表 + 読み書き + 自動保存 |
+| ④ | リロードで消えないか確認する | 完了。手元（localhost）で確認 |
+| ⑤ | Vercel に公開する | 完了。公開 URL でも保存・リロードを確認 |
 
 ### ①で決めたこと
 
@@ -101,11 +103,14 @@
 
 接続文字列はチャットや GitHub に貼らない。
 
-### まだやっていないこと
+### ③〜⑤でやったこと（保存と公開）
 
-- 3表を Neon の中に作ること
-- 画面の読み書きを JSON から Neon に切り替えること
-- リロードしても編集が残ること（③と④）
+- Neon に `workspaces` / `regulations` / `articles` の3表を作った（`npm run db:setup`）
+- 画面の読み書きを Neon に切り替えた。JSON は初期投入・フォールバック用
+- 編集はデバウンスで自動保存。ヘッダーに「保存済み」が出る
+- 手元（`http://localhost:3000`）でリロードしても残ることを確認した
+- 公開 URL（`https://regulation-revision-workspace.vercel.app`）でも同様に確認した
+- 公開ページは毎回 Neon から読む（`force-dynamic`）。静的化すると保存してもリロードで戻る
 
 ## ひな形との関係
 
@@ -160,16 +165,17 @@ npm run dev
 | `npm run test` | スモークテスト（Vitest） |
 | `npm run format` | Prettier で整形 |
 | `npm run check:radius` | 角丸ドリフト検出（独自スクリプト） |
+| `npm run db:setup` | Neon に3表を作り、初期データを入れる |
 
 規程改正の画面テストは `__tests__/regulation-revision-*.ts(x)` にある。
 
 ## 画面が出るまでの経路
 
-1. `app/page.tsx`（入口）
-2. `data/regulation-revision-workspace.json`（表示データ）
-3. `components/regulation-revision/RegulationRevisionWorkspace.tsx`（画面本体）
+1. `app/page.tsx`（入口。Neon から読み、失敗時は JSON）
+2. `lib/regulation-revision/db/`（Neon の接続・読み書き）
+3. `components/regulation-revision/RegulationRevisionWorkspace.tsx`（画面本体。自動保存）
 
-Cursor で中身を追うときは、この順で開く。
+初期見本データは `data/regulation-revision-workspace.json`。Cursor で中身を追うときは、この順で開く。
 
 ## フォルダの見分け方
 
@@ -181,11 +187,14 @@ Cursor で中身を追うときは、この順で開く。
 |---|---|
 | ブラウザの入口 | `app/page.tsx` |
 | 画面本体 | `components/regulation-revision/RegulationRevisionWorkspace.tsx` |
-| 画面データ | `data/regulation-revision-workspace.json` |
+| 初期見本データ | `data/regulation-revision-workspace.json` |
+| Neon の表定義・読み書き | `lib/regulation-revision/db/` |
+| 保存 Server Action | `app/actions/regulation-revision.ts` |
 | 型・検証 | `lib/regulation-revision/schema.ts` |
 | 条文分割 | `lib/regulation-revision/article-split.ts` |
 | 赤字下線の比較 | `lib/regulation-revision/diff.ts` |
-| 接続設定のひな形 | `.env.example`（値は入れない） |
+| 接続設定のひな形 | `.env.example`（値は入れない。本物は `.env.local`） |
+| DB セットアップ | `npm run db:setup` |
 | テスト | `__tests__/regulation-revision-*.ts(x)` |
 | 検討メモ | `docs/regulation-revision-workspace-notes.md` |
 | 図解 | `docs/regulation-revision-visual-explainer.md` |
@@ -243,12 +252,25 @@ git push -u github HEAD
 
 そのあと GitHub 上で Pull Request を作成し、`main` に merge する。
 
-### merge 後
+### merge 後（習慣: Merge したら pull）
 
-GitHub 上で merge したあと、手元の `main` を最新化し、不要なら作業ブランチを削除する。
+GitHub 上で merge すると、**GitHub の `main` だけが先に新しくなる**。  
+手元（自分の PC）の `main` は古いまま残る。次の作業前に必ずそろえる。
+
+習慣は **Merge したら pull** である。ターミナル（Cursor の Terminal など）で、リポジトリ直下から次を打つ。
 
 ```bash
 git switch main
 git pull github main
+```
+
+- `git switch main` … 手元で本番用の本線（`main`）を開く
+- `git pull github main` … GitHub の最新 `main` を手元に取り込む
+
+不要なら作業ブランチも削除する。
+
+```bash
 git branch -d feature/今回の作業名
 ```
+
+merge 後に Vercel が Ready になったら、**公開 URL**（`https://regulation-revision-workspace.vercel.app`）でも動作確認する。
