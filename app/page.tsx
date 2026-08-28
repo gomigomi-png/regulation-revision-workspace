@@ -4,6 +4,9 @@ import { hasDatabaseUrl } from "@/lib/regulation-revision/db/client";
 import { getWorkspaceById } from "@/lib/regulation-revision/db/repository";
 import { regulationRevisionWorkspaceSchema } from "@/lib/regulation-revision/schema";
 
+// 毎回 Neon から読む。静的化するとビルド時点の JSON / スナップショットが返り、保存が残らない。
+export const dynamic = "force-dynamic";
+
 const DEFAULT_WORKSPACE_ID = "rrw-001";
 
 function loadFallbackWorkspace() {
